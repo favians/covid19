@@ -1,0 +1,168 @@
+package main
+
+import (
+	"database/sql"
+	"flag"
+	"fmt"
+	"github.com/pressly/goose"
+	"log"
+	"os"
+
+	"rest_echo/api/models"
+	"rest_echo/bootstrap"
+	"rest_echo/db/gorm"
+	"rest_echo/router"
+)
+
+var (
+	flags = flag.NewFlagSet("goose", flag.ExitOnError)
+)
+
+func main() {
+
+	defer bootstrap.App.DB.Close()
+
+	//Print Usage For This Program
+	flags.Usage = usage
+	flags.Parse(os.Args[1:])
+
+	args := flags.Args()
+
+	if len(args) < 1 {
+		flags.Usage()
+		return
+	}
+
+	dir := "db/migrations"
+
+	//Run Program As Server
+	if args[0] == "run" {
+		fmt.Println("Golang Program Starter")
+
+		log.Printf(" This Program Run In {ENV : %s}", bootstrap.App.ENV)
+
+		e := router.New()
+
+		e.Start(":8000")
+		os.Exit(0)
+	}
+
+	//Run Seeder
+	if args[0] == "seed" {
+		// init database
+		gorm.Init()
+		autoDropTables()
+		autoCreateTables()
+		autoMigrateTables()
+		os.Exit(0)
+	}
+
+	// GOOSE For MIGRATION Package
+
+	if len(args) > 1 && args[0] == "create" {
+		if err := goose.Run("create", nil, dir, args[1:]...); err != nil {
+			log.Fatalf("goose run: %v", err)
+		}
+		return
+	}
+
+	if len(args) < 3 {
+		flags.Usage()
+		return
+	}
+
+	driver, dbstring, command := args[0], args[1], args[2]
+
+	switch driver {
+	case "postgres", "mysql", "sqlite3", "redshift":
+		if err := goose.SetDialect(driver); err != nil {
+			log.Fatal(err)
+		}
+	default:
+		log.Fatalf("%q driver not supported\n", driver)
+	}
+
+	switch dbstring {
+	case "":
+		log.Fatalf("-dbstring=%q not supported\n", dbstring)
+	default:
+	}
+
+	if driver == "redshift" {
+		driver = "postgres"
+	}
+
+	db, err := sql.Open(driver, dbstring)
+	if err != nil {
+		log.Fatalf("-dbstring=%q: %v\n", dbstring, err)
+	}
+
+	arguments := []string{}
+	if len(args) > 3 {
+		arguments = append(arguments, args[3:]...)
+	}
+
+	if err := goose.Run(command, db, dir, arguments...); err != nil {
+		log.Fatalf("goose run: %v", err)
+	}
+}
+
+// autoCreateTables: create database tables using GORM
+func autoCreateTables() {
+	if !gorm.DBManager().HasTable(&models.User{}) {
+		gorm.DBManager().CreateTable(&models.User{})
+	}
+
+	// seeder
+	if bootstrap.App.ENV == "dev" {
+		var users []models.User = []models.User{
+			models.User{Name: "Hello", Email: "iman@sepulsa.com"},
+			models.User{Name: "anton", Email: "anton@sepulsa.com"},
+			models.User{Name: "andreas", Email: "andreas@sepulsa.com"},
+			models.User{Name: "aizat", Email: "aizat@sepulsa.com"},
+			models.User{Name: "hendrik", Email: "hendrik@sepulsa.com"},
+			models.User{Name: "herman", Email: "herman@sepulsa.com"},
+		}
+
+		for _, user := range users {
+			gorm.DBManager().Create(&user)
+		}
+	}
+}
+
+// autoMigrateTables: migrate table columns using GORM
+func autoMigrateTables() {
+	gorm.DBManager().AutoMigrate(&models.User{})
+}
+
+// auto drop tables on dev mode
+func autoDropTables() {
+	if bootstrap.App.ENV == "dev" {
+		gorm.DBManager().DropTableIfExists(&models.User{}, &models.User{})
+	}
+}
+
+// FOR GOOSE
+
+func usage() {
+	log.Print(usagePrefix)
+	flags.PrintDefaults()
+	log.Print(usageCommands)
+}
+
+var (
+	usagePrefix = `
+Usage for Running Server:
+	go run main.go run
+
+Usage for Running as Worker: 
+	go run main.go start_worker WORKERNAME QUEUENAME`
+
+	usageCommands = `
+	Commands:
+		run                  Running HTTP server
+		up                   Migrate the DB to the most recent version available
+		up-to VERSION        Migrate the DB to a specific VERSION
+		down                 Roll back the version by 1
+		down-to VERSION      Roll back to a specific VERSION`
+)
