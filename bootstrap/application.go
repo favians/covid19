@@ -2,14 +2,25 @@ package bootstrap
 
 import (
 	"fmt"
+
 	"github.com/fsnotify/fsnotify"
+	_ "github.com/go-sql-driver/mysql"
 	"github.com/jinzhu/gorm"
+	_ "github.com/jinzhu/gorm/dialects/mysql"
+	_ "github.com/jinzhu/gorm/dialects/postgres"
+	_ "github.com/lib/pq"
 	"github.com/spf13/viper"
+
 	"log"
 	"strings"
+	"time"
 )
 
-var App *Application
+var (
+	App *Application
+	db  *gorm.DB
+	err error
+)
 
 type Config viper.Viper
 
@@ -29,6 +40,9 @@ func init() {
 	App.loadENV()
 	App.loadAppConfig()
 	App.loadDBConfig()
+
+	App.DB = App.DBInit()
+	App.DB.LogMode(false) // set query log = OFF
 }
 
 // loadAppConfig: read application config and build viper object
@@ -118,4 +132,63 @@ func (config *Config) Boolean(key string) bool {
 	var viperConfig viper.Viper
 	viperConfig = viper.Viper(*config)
 	return viperConfig.GetBool(fmt.Sprintf("%s.%s", App.ENV, key))
+}
+
+func (app *Application) DBInit() *gorm.DB {
+	var adapter string
+	adapter = app.DBConfig.String("adapter")
+	switch adapter {
+	case "mysql":
+		mysqlConn()
+	case "postgre":
+		postgresConn()
+	default:
+		log.Println("Undefined connection on config.yaml")
+	}
+
+	return db
+}
+
+// setupPostgresConn: setup postgres database connection using the configuration from database.yaml
+func postgresConn() {
+	var (
+		connectionString string
+		err              error
+	)
+	connectionString = fmt.Sprintf("postgresql://%s:%s@%s:%s/%s?sslmode=%s", App.DBConfig.String("username"), App.DBConfig.String("password"), App.DBConfig.String("host"), App.DBConfig.String("port"), App.DBConfig.String("database"), App.DBConfig.String("sslmode"))
+	if db, err = gorm.Open("postgres", connectionString); err != nil {
+		panic(err)
+	}
+	if err = db.DB().Ping(); err != nil {
+		panic(err)
+	}
+
+	db.LogMode(true)
+	db.Exec(fmt.Sprintf("SET TIMEZONE TO '%s'", App.AppConfig.String("timezone")))
+	db.Exec("CREATE EXTENSION postgis")
+	db.DB().SetConnMaxLifetime(time.Minute * time.Duration(App.DBConfig.Int("maxlifetime")))
+	db.DB().SetMaxIdleConns(App.DBConfig.Int("idle_conns"))
+	db.DB().SetMaxOpenConns(App.DBConfig.Int("open_conns"))
+}
+
+// mysqlConn: setup mysql database connection using the configuration from database.yaml
+func mysqlConn() {
+	var (
+		connectionString string
+		err              error
+	)
+
+	connectionString = fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?parseTime=true", App.DBConfig.String("username"), App.DBConfig.String("password"), App.DBConfig.String("host"), App.DBConfig.String("port"), App.DBConfig.String("database"))
+
+	if db, err = gorm.Open("mysql", connectionString); err != nil {
+		panic(err)
+	}
+	if err = db.DB().Ping(); err != nil {
+		panic(err)
+	}
+
+	db.LogMode(true)
+	db.Exec(fmt.Sprintf("SET TIMEZONE = '%s'", App.AppConfig.String("timezone")))
+	db.DB().SetMaxIdleConns(App.DBConfig.Int("idle_conns"))
+	db.DB().SetMaxOpenConns(App.DBConfig.Int("open_conns"))
 }
