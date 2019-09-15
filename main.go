@@ -67,6 +67,11 @@ func main() {
 		return
 	}
 
+	if args[0] == "-h" || args[0] == "--help" {
+		flags.Usage()
+		return
+	}
+
 	driver, dbstring, command := args[0], args[1], args[2]
 
 	switch driver {
@@ -113,11 +118,34 @@ func usage() {
 
 var (
 	usagePrefix = `
-Usage for Running Server:
-	go run main.go run
+Usage for Running Server: 
+	disbursement run
 
 Usage for Running as Worker: 
-	go run main.go start_worker WORKERNAME QUEUENAME`
+	disbursement start_worker WORKERNAME QUEUENAME
+
+	Examples:
+		disbursement start_worker worker_1 queue_to_listen
+
+Usage for Migrate: 
+	disbursement [OPTIONS] DRIVER DBSTRING COMMAND
+
+	Drivers:
+		postgres
+		mysql
+		sqlite3
+		redshift
+	Examples:
+		disbursement sqlite3 ./foo.db status
+		disbursement sqlite3 ./foo.db create init sql
+		disbursement sqlite3 ./foo.db create add_some_column sql
+		disbursement sqlite3 ./foo.db create fetch_user_data go
+		disbursement sqlite3 ./foo.db up
+		disbursement postgres "user=postgres dbname=postgres sslmode=disable" status
+		disbursement mysql "user:password@/dbname?parseTime=true" status
+		disbursement redshift "postgres://user:password@qwerty.us-east-1.redshift.amazonaws.com:5439/db" status
+	Options:
+	`
 
 	usageCommands = `
 	Commands:
@@ -125,5 +153,10 @@ Usage for Running as Worker:
 		up                   Migrate the DB to the most recent version available
 		up-to VERSION        Migrate the DB to a specific VERSION
 		down                 Roll back the version by 1
-		down-to VERSION      Roll back to a specific VERSION`
+		down-to VERSION      Roll back to a specific VERSION
+		redo                 Re-run the latest migration
+		status               Dump the migration status for the current DB
+		version              Print the current version of the database
+		create NAME [sql|go] Creates new migration file with next version
+`
 )
