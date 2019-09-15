@@ -14,7 +14,7 @@ import (
 	"math"
 	"reflect"
 
-	cgorm "rest_echo/db/gorm"
+	"rest_echo/bootstrap"
 
 	"github.com/jinzhu/gorm"
 )
@@ -42,7 +42,7 @@ var (
 func Create(v interface{}) error {
 	return WithinTransaction(func(tx *gorm.DB) (err error) {
 		// check new object
-		if !cgorm.DBManager().NewRecord(v) {
+		if !bootstrap.App.DB.NewRecord(v) {
 			return err
 		}
 		if err = tx.Create(v).Error; err != nil {
@@ -58,7 +58,7 @@ func Create(v interface{}) error {
 func Save(v interface{}) error {
 	return WithinTransaction(func(tx *gorm.DB) (err error) {
 		// check new object
-		if cgorm.DBManager().NewRecord(v) {
+		if bootstrap.App.DB.NewRecord(v) {
 			return err
 		}
 		if err = tx.Save(v).Error; err != nil {
@@ -146,8 +146,8 @@ func FindAllWithPage(v interface{}, page int, rp int, filters interface{}) (resp
 		rp = 25
 	}
 
-	// tx := cgorm.DBManager().Begin()
-	tx := cgorm.DBManager()
+	// tx := bootstrap.App.DB.Begin()
+	tx := bootstrap.App.DB
 
 	// loop through "filters"
 	refOf := reflect.ValueOf(filters).Elem()
@@ -196,7 +196,7 @@ func FindAllWithPage(v interface{}, page int, rp int, filters interface{}) (resp
 // accept DBFunc as parameter
 // call DBFunc function within transaction begin, and commit and return error from DBFunc
 func WithinTransaction(fn DBFunc) (err error) {
-	tx := cgorm.DBManager().Begin() // start db transaction
+	tx := bootstrap.App.DB.Begin() // start db transaction
 	defer tx.Commit()
 	err = fn(tx)
 	// close db transaction

@@ -11,6 +11,7 @@ import (
 	_ "github.com/lib/pq"
 	"github.com/spf13/viper"
 
+	"go/build"
 	"log"
 	"strings"
 	"time"
@@ -31,15 +32,20 @@ type Application struct {
 	AppConfig Config   `json:"application_config"`
 	DBConfig  Config   `json:"database_config"`
 	DB        *gorm.DB `json:"db"`
+	Path      string   `json:"path"`
 }
 
 func init() {
 	App = &Application{}
-	App.Name = "APP_NAME"
-	App.Version = "APP_VERSION"
+
+	App.Path = fmt.Sprintf("%s/src/StarterGolang", build.Default.GOPATH)
+
 	App.loadENV()
 	App.loadAppConfig()
 	App.loadDBConfig()
+
+	App.Name = App.AppConfig.String("app_name")
+	App.Version = App.AppConfig.String("app_version")
 
 	App.DB = App.DBInit()
 	App.DB.LogMode(false) // set query log = OFF
