@@ -19,6 +19,7 @@ Below is the packages used by this project
 * Logger :
     - Logrus: https://github.com/sirupsen/logrus
     - Rotator: https://github.com/lestrrat-go/file-rotatelogs
+* Migration: https://github.com/pressly/goose
 * Message Queue: TBD
 
 ## Configs
