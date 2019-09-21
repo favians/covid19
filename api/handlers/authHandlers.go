@@ -3,38 +3,52 @@ package handlers
 import (
 	"log"
 	"net/http"
+	"rest_echo/api/models"
+	"rest_echo/bootstrap"
 	"time"
 
 	jwt "github.com/dgrijalva/jwt-go"
 	"github.com/labstack/echo"
+	"github.com/thedevsaddam/govalidator"
 )
 
+type response struct {
+	Token     string  `json:"token"`
+	ExpiresIn float64 `json:"expires_in"`
+}
+
 type JwtClaims struct {
-	Name string `json:"name"`
+	Name       string `json:"name"`
+	IsInternal bool   `json:"is_internal"`
 	jwt.StandardClaims
 }
 
-func Login(c echo.Context) error {
+func LoginUser(c echo.Context) error {
+	var (
+		user models.User
+	)
+
 	username := c.QueryParam("username")
 	password := c.QueryParam("password")
 
-	// check username and password against DB after hashing the password
-	if username == "jack" && password == "1234" {
-		cookie := &http.Cookie{}
+	rules := govalidator.MapData{
+		"username": []string{"required"},
+		"password": []string{"required"},
+	}
 
-		// this is the same
-		//cookie := new(http.Cookie)
+	vld := ValidateQueryStr(c, rules)
+	if vld != nil {
+		return echo.NewHTTPError(http.StatusUnprocessableEntity, vld)
+	}
 
-		cookie.Name = "sessionID"
-		cookie.Value = "some_string"
-		cookie.Expires = time.Now().Add(48 * time.Hour)
-
-		c.SetCookie(cookie)
+	if bootstrap.App.DB.Where("username = ?", username).Where("password = ?", password).Find(&user).RecordNotFound() {
+		return echo.NewHTTPError(http.StatusUnauthorized, "invalid username or password")
+	} else {
 
 		// create jwt token
-		token, err := createJwtToken()
+		token, err := createJwtToken(user.Username, "user")
 		if err != nil {
-			log.Println("Error Creating JWT token", err)
+			log.Println("Error Creating User JWT token", err)
 			return c.String(http.StatusInternalServerError, "something went wrong")
 		}
 
@@ -47,17 +61,71 @@ func Login(c echo.Context) error {
 	return c.String(http.StatusUnauthorized, "Your username or password were wrong")
 }
 
-func createJwtToken() (string, error) {
-	claims := JwtClaims{
-		"jack",
-		jwt.StandardClaims{
-			Id:        "main_user_id",
-			ExpiresAt: time.Now().Add(24 * time.Hour).Unix(),
-		},
+func LoginAdmin(c echo.Context) error {
+	var (
+		user models.User
+	)
+
+	username := c.QueryParam("username")
+	password := c.QueryParam("password")
+
+	rules := govalidator.MapData{
+		"username": []string{"required"},
+		"password": []string{"required"},
 	}
 
-	rawToken := jwt.NewWithClaims(jwt.SigningMethodHS512, claims)
+	vld := ValidateQueryStr(c, rules)
+	if vld != nil {
+		return echo.NewHTTPError(http.StatusUnprocessableEntity, vld)
+	}
 
+	if bootstrap.App.DB.Where("username = ?", username).Where("password = ?", password).Find(&user).RecordNotFound() {
+		return echo.NewHTTPError(http.StatusUnauthorized, "invalid username or password")
+	} else {
+
+		// create jwt token
+		token, err := createJwtToken(user.Username, "admin")
+		if err != nil {
+			log.Println("Error Creating User JWT token", err)
+			return c.String(http.StatusInternalServerError, "something went wrong")
+		}
+
+		return c.JSON(http.StatusOK, map[string]string{
+			"message": "You were logged in!",
+			"token":   token,
+		})
+	}
+
+	return c.String(http.StatusUnauthorized, "Your username or password were wrong")
+}
+
+func createJwtToken(uname string, jtype string) (string, error) {
+	var (
+		claim    JwtClaims
+		lifeTime int64 = time.Now().Add(24 * time.Hour).Unix()
+	)
+
+	if jtype == "admin" {
+		claim = JwtClaims{
+			uname,
+			true,
+			jwt.StandardClaims{
+				Id:        uname,
+				ExpiresAt: lifeTime,
+			},
+		}
+	} else {
+		claim = JwtClaims{
+			uname,
+			false,
+			jwt.StandardClaims{
+				Id:        uname,
+				ExpiresAt: lifeTime,
+			},
+		}
+	}
+
+	rawToken := jwt.NewWithClaims(jwt.SigningMethodHS512, claim)
 	token, err := rawToken.SignedString([]byte("mySecret"))
 	if err != nil {
 		return "", err

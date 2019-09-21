@@ -7,7 +7,8 @@ CREATE TABLE "users" (
     "updated_at" timestamptz DEFAULT CURRENT_TIMESTAMP,
     "deleted_at" timestamptz,
     "name" character varying(100),
-    "email" character varying(100)
+    "username" character varying(100),
+    "password" character varying(100)
 ) WITH (oids = false);
 
 -- +goose Down

@@ -10,8 +10,9 @@ import (
 type (
 	User struct {
 		BaseModel
-		Name  string `json:"name"`
-		Email string `json:"email" valid:"email"`
+		Name     string `json:"name"`
+		Username string `json:"username"`
+		Password string `json:"password" valid:"password"`
 	}
 
 	UserPaginationResponse struct {
@@ -21,8 +22,8 @@ type (
 
 	// just use string type, since it will be use on query at DB layer
 	UserFilterable struct {
-		Name  string `json:"name"`
-		Email string `json:"email"`
+		Name     string `json:"name"`
+		Username string `json:"username"`
 	}
 )
 

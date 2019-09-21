@@ -7,7 +7,9 @@ import (
 )
 
 func MainGroup(e *echo.Echo) {
-	e.GET("/login", handlers.Login)
+	e.GET("/login", handlers.LoginUser)
+	e.GET("/login/admin", handlers.LoginAdmin)
+
 	e.GET("/yallo", handlers.Yallo)
 	e.GET("/cats/:data", handlers.GetCats)
 

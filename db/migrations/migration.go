@@ -18,12 +18,9 @@ func Seed() {
 		log.Printf("------------- SEED User ---------------")
 
 		var users []models.User = []models.User{
-			models.User{Name: "Hello", Email: "iman@sepulsa.com"},
-			models.User{Name: "anton", Email: "anton@sepulsa.com"},
-			models.User{Name: "andreas", Email: "andreas@sepulsa.com"},
-			models.User{Name: "aizat", Email: "aizat@sepulsa.com"},
-			models.User{Name: "hendrik", Email: "hendrik@sepulsa.com"},
-			models.User{Name: "herman", Email: "herman@sepulsa.com"},
+			models.User{Name: "vian", Username: "vian", Password: "1234"},
+			models.User{Name: "teta", Username: "teta", Password: "1234"},
+			models.User{Name: "dhana", Username: "dhana", Password: "1234"},
 		}
 
 		for _, user := range users {
