@@ -25,6 +25,8 @@ func init() {
 }
 
 func GetUsers(c echo.Context) error {
+	model := models.User{}
+
 	rp, err := strconv.Atoi(c.QueryParam("rp"))
 	page, err := strconv.Atoi(c.QueryParam("p"))
 	name := c.QueryParam("name")
@@ -44,7 +46,7 @@ func GetUsers(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusUnprocessableEntity, vld)
 	}
 
-	result, err := models.FindAllUsers(page, rp, &models.UserFilterable{name, email})
+	result, err := model.GetList(page, rp, &models.UserFilterable{name, email})
 	if err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
@@ -53,6 +55,8 @@ func GetUsers(c echo.Context) error {
 }
 
 func GetUserById(c echo.Context) error {
+	model := models.User{}
+
 	id, err := strconv.Atoi(c.QueryParam("id"))
 
 	defer c.Request().Body.Close()
@@ -66,7 +70,7 @@ func GetUserById(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusUnprocessableEntity, vld)
 	}
 
-	result, err := models.FindUserByID(id)
+	result, err := model.FindByID(id)
 	if err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
@@ -75,7 +79,7 @@ func GetUserById(c echo.Context) error {
 }
 
 func AddUser(c echo.Context) error {
-	user := models.User{}
+	model := models.User{}
 
 	defer c.Request().Body.Close()
 
@@ -84,12 +88,12 @@ func AddUser(c echo.Context) error {
 		"email": []string{"required", "email"},
 	}
 
-	vld := ValidateRequest(c, rules, &user)
+	vld := ValidateRequest(c, rules, &model)
 	if vld != nil {
 		return echo.NewHTTPError(http.StatusUnprocessableEntity, vld)
 	}
 
-	result, err := models.Create(&user)
+	result, err := model.Create()
 	if err != nil {
 		log.Printf("FAILED TO CREATE : %s\n", err)
 		return echo.NewHTTPError(http.StatusBadRequest, "Failed to create new user")
@@ -99,6 +103,8 @@ func AddUser(c echo.Context) error {
 }
 
 func EditUser(c echo.Context) error {
+	model := models.User{}
+
 	id, err := strconv.Atoi(c.QueryParam("id"))
 
 	defer c.Request().Body.Close()
@@ -108,28 +114,30 @@ func EditUser(c echo.Context) error {
 		"email": []string{"email"},
 	}
 
-	user, err := models.FindUserByID(id)
+	_, err = model.FindByID(id)
 	if err != nil {
 		return echo.NewHTTPError(http.StatusNotFound, err.Error())
 	}
 
-	vld := ValidateRequest(c, rules, &user)
+	vld := ValidateRequest(c, rules, &model)
 	if vld != nil {
 		return echo.NewHTTPError(http.StatusUnprocessableEntity, vld)
 	}
 
-	c.Bind(&user)
+	c.Bind(&model)
 
-	err = user.Update()
+	err = model.Update()
 	if err != nil {
 		log.Printf("FAILED TO UPDATE: %s\n", err)
 		return echo.NewHTTPError(http.StatusBadRequest, "Failed to update user")
 	}
 
-	return c.JSON(http.StatusOK, user)
+	return c.JSON(http.StatusOK, model)
 }
 
 func DeleteUser(c echo.Context) error {
+	model := models.User{}
+
 	id, err := strconv.Atoi(c.QueryParam("id"))
 
 	defer c.Request().Body.Close()
@@ -143,18 +151,18 @@ func DeleteUser(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusUnprocessableEntity, vld)
 	}
 
-	user, err := models.FindUserByID(id)
+	_, err = model.FindByID(id)
 	if err != nil {
 		return echo.NewHTTPError(http.StatusNotFound, err.Error())
 	}
 
-	c.Bind(&user)
+	c.Bind(&model)
 
-	err = user.Delete()
+	err = model.Delete()
 	if err != nil {
 		log.Printf("FAILED TO DELETE: %s\n", err)
 		return echo.NewHTTPError(http.StatusBadRequest, "Failed to delete user")
 	}
 
-	return c.JSON(http.StatusOK, user)
+	return c.JSON(http.StatusOK, model)
 }

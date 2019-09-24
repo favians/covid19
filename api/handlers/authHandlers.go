@@ -62,10 +62,6 @@ func LoginUser(c echo.Context) error {
 }
 
 func LoginAdmin(c echo.Context) error {
-	var (
-		user models.User
-	)
-
 	username := c.QueryParam("username")
 	password := c.QueryParam("password")
 
@@ -78,13 +74,11 @@ func LoginAdmin(c echo.Context) error {
 	if vld != nil {
 		return echo.NewHTTPError(http.StatusUnprocessableEntity, vld)
 	}
+	adminUsername, adminPassword := bootstrap.App.AppConfig.String("admin_username"), bootstrap.App.AppConfig.String("admin_password")
 
-	if bootstrap.App.DB.Where("username = ?", username).Where("password = ?", password).Find(&user).RecordNotFound() {
-		return echo.NewHTTPError(http.StatusUnauthorized, "invalid username or password")
-	} else {
-
+	if username == adminUsername && password == adminPassword {
 		// create jwt token
-		token, err := createJwtToken(user.Username, "admin")
+		token, err := createJwtToken(username, "admin")
 		if err != nil {
 			log.Println("Error Creating User JWT token", err)
 			return c.String(http.StatusInternalServerError, "something went wrong")

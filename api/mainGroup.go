@@ -2,6 +2,7 @@ package api
 
 import (
 	"rest_echo/api/handlers"
+	"rest_echo/api/middlewares"
 
 	"github.com/labstack/echo"
 )
@@ -17,9 +18,12 @@ func MainGroup(e *echo.Echo) {
 	e.POST("/dogs", handlers.AddDog)
 	e.POST("/hamsters", handlers.AddHamster)
 
-	e.GET("/users", handlers.GetUsers)
-	e.GET("/user", handlers.GetUserById)
-	e.POST("/users", handlers.AddUser)
-	e.PUT("/users", handlers.EditUser)
-	e.DELETE("/users", handlers.DeleteUser)
+	g := e.Group("/users")
+	middlewares.SetJwtMiddlewares(g)
+	g.GET("/list", handlers.GetUsers)
+	g.GET("", handlers.GetUserById)
+	g.POST("", handlers.AddUser)
+	g.PUT("", handlers.EditUser)
+	g.DELETE("", handlers.DeleteUser)
+
 }

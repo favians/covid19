@@ -2,9 +2,6 @@ package models
 
 import (
 	"time"
-
-	// "rest_echo/api/models"
-	"rest_echo/api/models/orm"
 )
 
 type (
@@ -16,8 +13,8 @@ type (
 	}
 
 	UserPaginationResponse struct {
-		Meta orm.PaginationResponse `json:"meta"`
-		Data []User                 `json:"data"`
+		Meta PaginationResponse `json:"meta"`
+		Data []User             `json:"data"`
 	}
 
 	// just use string type, since it will be use on query at DB layer
@@ -45,43 +42,42 @@ func (m *User) BeforeCreate() (err error) {
 }
 
 // Create
-func Create(m *User) (*User, error) {
+func (m *User) Create() (*User, error) {
 	var err error
-	err = orm.Create(&m)
+	err = Create(&m)
 	return m, err
 }
 
 // Update
 func (m *User) Update() error {
 	var err error
-	err = orm.Save(&m)
+	err = Save(&m)
 	return err
 }
 
 // Delete
 func (m *User) Delete() error {
 	var err error
-	err = orm.Delete(&m)
+	err = Delete(&m)
 	return err
 }
 
-// FindUserByID
-func FindUserByID(id int) (User, error) {
+// FindByID
+func (m *User) FindByID(id int) (*User, error) {
 	var (
-		user User
-		err  error
+		err error
 	)
-	err = orm.FindOneByID(&user, id)
-	return user, err
+	err = FindOneByID(&m, id)
+	return m, err
 }
 
-// FindAllUsers
-func FindAllUsers(page int, rp int, filters interface{}) (interface{}, error) {
+// GetList
+func (m *User) GetList(page int, rp int, filters interface{}) (interface{}, error) {
 	var (
 		users []User
 		err   error
 	)
 
-	resp, err := orm.FindAllWithPage(&users, page, rp, filters)
+	resp, err := FindAllWithPage(&users, page, rp, filters)
 	return resp, err
 }
