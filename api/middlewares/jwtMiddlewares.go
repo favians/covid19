@@ -2,12 +2,13 @@ package middlewares
 
 import (
 	"fmt"
+	"log"
 	"net/http"
 	"rest_echo/api/models"
 	"rest_echo/bootstrap"
 	"strconv"
 
-	"github.com/dgrijalva/jwt-go"
+	jwt "github.com/dgrijalva/jwt-go"
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/middleware"
 )
@@ -16,7 +17,7 @@ import (
 func SetJwtMiddlewares(g *echo.Group) {
 
 	secret := bootstrap.App.DBConfig.String("jwt_secret")
-
+	log.Println(secret)
 	// validate jwt token
 	g.Use(middleware.JWTWithConfig(middleware.JWTConfig{
 		SigningMethod: "HS512",
@@ -53,13 +54,14 @@ func SetJwtGeneralMiddlewares(g *echo.Group) {
 	}))
 
 	// validate payload related with admin type of token
-	g.Use(SettingGeneralJwt)
+	g.Use(ValidateGeneralJwt)
 }
 
 // validateJwtAdmin
 // Middleware for validating access to Admin only resources
 func validateJwtAdmin(next echo.HandlerFunc) echo.HandlerFunc {
 	return func(c echo.Context) error {
+
 		user := c.Get("user")
 		token := user.(*jwt.Token)
 
@@ -98,14 +100,14 @@ func validateJwtUser(next echo.HandlerFunc) echo.HandlerFunc {
 	}
 }
 
-//SettingGeneralJwt Use this method to Get Data Either ADMIN or MERCHANT
-func SettingGeneralJwt(next echo.HandlerFunc) echo.HandlerFunc {
+//ValidateGeneralJwt Use this method to Get Data Either ADMIN or MERCHANT
+func ValidateGeneralJwt(next echo.HandlerFunc) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		user := c.Get("user")
 		token := user.(*jwt.Token)
 
 		if claims, ok := token.Claims.(jwt.MapClaims); ok {
-			if claims["is_internal"] == true {
+			if claims["is_admin"] == true {
 				return next(c)
 			} else {
 				user := models.User{}

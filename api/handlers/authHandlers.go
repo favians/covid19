@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"rest_echo/api/models"
 	"rest_echo/bootstrap"
+	"strconv"
 	"time"
 
 	jwt "github.com/dgrijalva/jwt-go"
@@ -18,8 +19,8 @@ type response struct {
 }
 
 type JwtClaims struct {
-	Name       string `json:"name"`
-	IsInternal bool   `json:"is_internal"`
+	Name    string `json:"name"`
+	IsAdmin bool   `json:"is_admin"`
 	jwt.StandardClaims
 }
 
@@ -46,7 +47,7 @@ func LoginUser(c echo.Context) error {
 	} else {
 
 		// create jwt token
-		token, err := createJwtToken(user.Username, "user")
+		token, err := createJwtToken(strconv.FormatUint(user.ID, 10), "user")
 		if err != nil {
 			log.Println("Error Creating User JWT token", err)
 			return c.String(http.StatusInternalServerError, "something went wrong")
@@ -119,8 +120,9 @@ func createJwtToken(uname string, jtype string) (string, error) {
 		}
 	}
 
+	secret := bootstrap.App.AppConfig.String("jwt_secret")
 	rawToken := jwt.NewWithClaims(jwt.SigningMethodHS512, claim)
-	token, err := rawToken.SignedString([]byte("mySecret"))
+	token, err := rawToken.SignedString([]byte(secret))
 	if err != nil {
 		return "", err
 	}

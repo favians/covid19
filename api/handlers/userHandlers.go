@@ -30,15 +30,13 @@ func GetUsers(c echo.Context) error {
 	rp, err := strconv.Atoi(c.QueryParam("rp"))
 	page, err := strconv.Atoi(c.QueryParam("p"))
 	name := c.QueryParam("name")
-	email := c.QueryParam("email")
+	username := c.QueryParam("username")
 
 	defer c.Request().Body.Close()
 
 	rules := govalidator.MapData{
-		"rp":    []string{"numeric"},
-		"page":  []string{"numeric"},
-		"name":  []string{"alpha_num"},
-		"email": []string{"email"},
+		"rp":   []string{"numeric"},
+		"page": []string{"numeric"},
 	}
 
 	vld := ValidateQueryStr(c, rules)
@@ -46,7 +44,7 @@ func GetUsers(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusUnprocessableEntity, vld)
 	}
 
-	result, err := model.GetList(page, rp, &models.UserFilterable{name, email})
+	result, err := model.GetList(page, rp, &models.UserFilterable{name, username})
 	if err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
@@ -84,8 +82,9 @@ func AddUser(c echo.Context) error {
 	defer c.Request().Body.Close()
 
 	rules := govalidator.MapData{
-		"name":  []string{"required"},
-		"email": []string{"required", "email"},
+		"name":     []string{"required"},
+		"username": []string{"required"},
+		"password": []string{"required"},
 	}
 
 	vld := ValidateRequest(c, rules, &model)
@@ -110,8 +109,9 @@ func EditUser(c echo.Context) error {
 	defer c.Request().Body.Close()
 
 	rules := govalidator.MapData{
-		"name":  []string{},
-		"email": []string{"email"},
+		"name":     []string{"required"},
+		"username": []string{"required"},
+		"password": []string{"required"},
 	}
 
 	_, err = model.FindByID(id)

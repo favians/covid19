@@ -20,10 +20,25 @@ func MainGroup(e *echo.Echo) {
 
 	g := e.Group("/users")
 	middlewares.SetJwtMiddlewares(g)
-	g.GET("/list", handlers.GetUsers)
 	g.GET("", handlers.GetUserById)
+	g.GET("/list", handlers.GetUsers)
 	g.POST("", handlers.AddUser)
 	g.PUT("", handlers.EditUser)
 	g.DELETE("", handlers.DeleteUser)
 
+	g = e.Group("admin/users")
+	middlewares.SetJwtAdminMiddlewares(g)
+	g.GET("", handlers.GetUserById)
+	g.GET("/list", handlers.GetUsers)
+	g.POST("", handlers.AddUser)
+	g.PUT("", handlers.EditUser)
+	g.DELETE("", handlers.DeleteUser)
+
+	g = e.Group("general/users")
+	middlewares.SetJwtGeneralMiddlewares(g)
+	g.GET("", handlers.GetUserById)
+	g.GET("/list", handlers.GetUsers)
+	g.POST("", handlers.AddUser)
+	g.PUT("", handlers.EditUser)
+	g.DELETE("", handlers.DeleteUser)
 }
