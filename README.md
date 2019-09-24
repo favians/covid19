@@ -20,7 +20,6 @@ Below is the packages used by this project
     - Logrus: https://github.com/sirupsen/logrus
     - Rotator: https://github.com/lestrrat-go/file-rotatelogs
 * Migration: https://github.com/pressly/goose
-* Message Queue: TBD
 
 ## Configs
 
@@ -28,11 +27,11 @@ Config file located in ```config.yaml``` on the root of project.
 
 ## ORM
 
-Ready for Postgres and MySQL. Connection function located at ```db/gorm/gorm.go```. Those function called in ```main.go```.
+Ready for Postgres and MySQL. Connection function located at ```bootstrap.go```. Those function called in ```bootstrap.go```.
 
 ### CRUD Functionality
 
-Base CRUD function are located in ```models/orm/orm.go```. Example implementation within each model can be found at ```models/user.go```
+Base CRUD function are located in ```models/base.go```. Example implementation within each model can be found at ```models/user.go```
 
 ### Models
 
@@ -77,7 +76,7 @@ go test tests/*_test.go
 * Create another container for Postgre, and put in the same docker network (i.e ```my-shared-network```). You can use my [support container](https://github.com/rimantoro/docker_support_stack)
 * Run ```docker-compose up --build``` on project root, and make sure to check it if its run well with ```docker-compose ps```, you should see like this below
 ```bash
-Imans-MacBook-Air:disbursement iman$ docker-compose ps
+Faviansyah-MacBook-Air:disbursement Faviansyah$ docker-compose ps
        Name                     Command               State           Ports
 ------------------------------------------------------------------------------------
 <your_project_folder>_api_1   /bin/sh -c dep ensure && g ...   Up      0.0.0.0:8000->8000/tcp
