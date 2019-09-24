@@ -31,6 +31,8 @@ func GetUsers(c echo.Context) error {
 	page, err := strconv.Atoi(c.QueryParam("p"))
 	name := c.QueryParam("name")
 	username := c.QueryParam("username")
+	orderby := c.QueryParam("orderby")
+	sort := c.QueryParam("sort")
 
 	defer c.Request().Body.Close()
 
@@ -44,7 +46,7 @@ func GetUsers(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusUnprocessableEntity, vld)
 	}
 
-	result, err := model.GetList(page, rp, &models.UserFilterable{name, username})
+	result, err := model.GetList(page, rp, orderby, sort, &models.UserFilterable{name, username})
 	if err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}

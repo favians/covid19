@@ -72,12 +72,12 @@ func (m *User) FindByID(id int) (*User, error) {
 }
 
 // GetList
-func (m *User) GetList(page int, rp int, filters interface{}) (interface{}, error) {
+func (m *User) GetList(page int, rp int, orderby string, sort string, filters interface{}) (interface{}, error) {
 	var (
 		users []User
 		err   error
 	)
 
-	resp, err := FindAllWithPage(&users, page, rp, filters)
+	resp, err := FindAllWithPage(&users, page, rp, orderby, sort, filters)
 	return resp, err
 }

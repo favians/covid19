@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"math"
 	"reflect"
+	"strings"
 	"time"
 
 	"rest_echo/bootstrap"
@@ -135,7 +136,7 @@ func FindByQuery(v interface{}, params map[string]interface{}) (err error) {
 // page int	Page number
 // rp int	Record per page to be showed
 // filters int	Gorm model struct for filters
-func FindAllWithPage(v interface{}, page int, rp int, filters interface{}) (resp PaginationResponse, err error) {
+func FindAllWithPage(v interface{}, page int, rp int, orderby string, sort string, filters interface{}) (resp PaginationResponse, err error) {
 	var (
 		offset   int
 		lastPage int = 1
@@ -161,6 +162,23 @@ func FindAllWithPage(v interface{}, page int, rp int, filters interface{}) (resp
 		// just make sure ModelFilterable its all in string type
 		if f.Interface() != "" {
 			tx = tx.Where(fmt.Sprintf("%s = ?", typeOf.Field(i).Name), f.Interface())
+		}
+	}
+
+	// Query to Order by Column and Sort ASC|DESC
+	if orderby != "" {
+		qry := strings.Split(orderby, ",")
+		srt := strings.Split(sort, ",")
+
+		for index, element := range qry {
+			a := element
+			if len(srt) > index {
+				value := srt[index]
+				if strings.ToUpper(value) == "ASC" || strings.ToUpper(value) == "DESC" {
+					a = element + " " + strings.ToUpper(value)
+				}
+			}
+			tx = tx.Order(a)
 		}
 	}
 
