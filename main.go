@@ -4,13 +4,14 @@ import (
 	"database/sql"
 	"flag"
 	"fmt"
-	"github.com/pressly/goose"
 	"log"
 	"os"
 
-	"rest_echo/bootstrap"
-	"rest_echo/db/migrations"
-	"rest_echo/router"
+	"github.com/pressly/goose"
+
+	"golang_starter/bootstrap"
+	"golang_starter/db/migrations"
+	"golang_starter/router"
 )
 
 var (

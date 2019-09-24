@@ -5,7 +5,7 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"rest_echo/router"
+	"golang_starter/router"
 
 	"github.com/gavv/httpexpect"
 )

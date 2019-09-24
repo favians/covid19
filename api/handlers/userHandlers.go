@@ -5,7 +5,7 @@ import (
 	"os"
 	"strconv"
 
-	"rest_echo/api/models"
+	"golang_starter/api/models"
 
 	"github.com/labstack/echo"
 	log "github.com/sirupsen/logrus"

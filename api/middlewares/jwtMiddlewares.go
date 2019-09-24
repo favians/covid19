@@ -2,10 +2,9 @@ package middlewares
 
 import (
 	"fmt"
-	"log"
+	"golang_starter/api/models"
+	"golang_starter/bootstrap"
 	"net/http"
-	"rest_echo/api/models"
-	"rest_echo/bootstrap"
 	"strconv"
 
 	jwt "github.com/dgrijalva/jwt-go"
@@ -17,7 +16,6 @@ import (
 func SetJwtMiddlewares(g *echo.Group) {
 
 	secret := bootstrap.App.DBConfig.String("jwt_secret")
-	log.Println(secret)
 	// validate jwt token
 	g.Use(middleware.JWTWithConfig(middleware.JWTConfig{
 		SigningMethod: "HS512",

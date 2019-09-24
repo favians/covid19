@@ -1,8 +1,8 @@
 package router
 
 import (
-	"rest_echo/api"
-	"rest_echo/api/middlewares"
+	"golang_starter/api"
+	"golang_starter/api/middlewares"
 
 	"github.com/labstack/echo"
 )

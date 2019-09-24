@@ -3,7 +3,7 @@ package middlewares
 import (
 	"encoding/json"
 
-	"rest_echo/modules/logger"
+	"golang_starter/modules/logger"
 
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/middleware"
