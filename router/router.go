@@ -1,8 +1,8 @@
 package router
 
 import (
-	"golang_starter/api"
-	"golang_starter/api/middlewares"
+	"github.com/favians/golang_starter/api"
+	"github.com/favians/golang_starter/api/middlewares"
 
 	"github.com/labstack/echo"
 )

@@ -5,7 +5,7 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"golang_starter/router"
+	"github.com/favians/golang_starter/router"
 
 	"github.com/gavv/httpexpect"
 )

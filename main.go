@@ -9,9 +9,9 @@ import (
 
 	"github.com/pressly/goose"
 
-	"golang_starter/bootstrap"
-	"golang_starter/db/migrations"
-	"golang_starter/router"
+	bootstrap "github.com/favians/golang_starter/bootstrap"
+	"github.com/favians/golang_starter/db/migrations"
+	router "github.com/favians/golang_starter/router"
 )
 
 var (

@@ -7,7 +7,7 @@ import (
 	"strings"
 	"time"
 
-	"golang_starter/bootstrap"
+	"github.com/favians/golang_starter/bootstrap"
 
 	"github.com/jinzhu/gorm"
 )

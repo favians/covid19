@@ -3,8 +3,8 @@ package handlers
 import (
 	"log"
 	"net/http"
-	"golang_starter/api/models"
-	"golang_starter/bootstrap"
+	"github.com/favians/golang_starter/api/models"
+	"github.com/favians/golang_starter/bootstrap"
 	"strconv"
 	"time"
 

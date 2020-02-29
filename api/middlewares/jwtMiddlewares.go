@@ -2,8 +2,8 @@ package middlewares
 
 import (
 	"fmt"
-	"golang_starter/api/models"
-	"golang_starter/bootstrap"
+	"github.com/favians/golang_starter/api/models"
+	"github.com/favians/golang_starter/bootstrap"
 	"net/http"
 	"strconv"
 

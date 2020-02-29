@@ -5,7 +5,7 @@ import (
 	"os"
 	"strconv"
 
-	"golang_starter/api/models"
+	"github.com/favians/golang_starter/api/models"
 
 	"github.com/labstack/echo"
 	log "github.com/sirupsen/logrus"

@@ -1,8 +1,8 @@
 package api
 
 import (
-	"golang_starter/api/handlers"
-	"golang_starter/api/middlewares"
+	"github.com/favians/golang_starter/api/handlers"
+	"github.com/favians/golang_starter/api/middlewares"
 
 	"github.com/labstack/echo"
 )
