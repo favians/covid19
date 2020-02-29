@@ -3,6 +3,7 @@ package migrations
 import (
 	"encoding/json"
 	"log"
+
 	"github.com/favians/golang_starter/api/models"
 	"github.com/favians/golang_starter/bootstrap"
 )
@@ -45,6 +46,6 @@ func Seed() {
 func Truncate() {
 	if bootstrap.App.ENV == "dev" || bootstrap.App.ENV == "staging" {
 		log.Printf("------------- TRUNCATE TABLE ---------------")
-		bootstrap.App.DB.Exec("TRUNCATE TABLE user RESTART IDENTITY CASCADE;")
+		bootstrap.App.DB.Exec("TRUNCATE TABLE users RESTART IDENTITY CASCADE;")
 	}
 }

@@ -25,5 +25,8 @@ func AddDog(c echo.Context) error {
 	}
 
 	log.Printf("this is your dog: %#v", dog)
-	return c.String(http.StatusOK, "we got your dog!")
+	return c.JSON(http.StatusOK, map[string]interface{}{
+		"status": "we got your dog",
+		"value":  dog,
+	})
 }

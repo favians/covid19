@@ -22,6 +22,10 @@ func New() *echo.Echo {
 	// set main routes
 	api.MainGroup(e)
 
+	// set token and auth routes
+	api.TokenGroup(e)
+	api.AuthGroup(e)
+
 	// set group routes
 	api.JwtGroup(jwtGroup)
 

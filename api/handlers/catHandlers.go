@@ -55,5 +55,8 @@ func AddCat(c echo.Context) error {
 	}
 
 	log.Printf("this is your cat: %#v\n", cat)
-	return c.String(http.StatusOK, "we got your cat!")
+	return c.JSON(http.StatusOK, map[string]interface{}{
+		"status": "we got your cat",
+		"value":  cat,
+	})
 }
