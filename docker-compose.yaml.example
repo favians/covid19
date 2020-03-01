@@ -1,0 +1,43 @@
+version: "3"
+
+services:
+  server_mode:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - 8000:8000
+    image: golang_starter_server
+    volumes:
+      - ./:/app/golang_starter
+    environment:
+      - PGHOST= postgres_server
+      - PGUSER=root
+      - PGPASS=masukaja
+      - DBNAME=golang_starter
+      - APPENV=dev
+      - APPMODE=server
+    container_name: golang_starter_server
+
+  # debug_mode:
+  #   image: golang_starter_debug
+  #   ports:
+  #     - 8000:8000
+  #   build:
+  #     context: .
+  #     dockerfile: Dockerfile-debug-mode
+  #   environment:
+  #     - PGHOST=postgres_server
+  #     - PGUSER=root
+  #     - PGPASS=masukaja
+  #     - DBNAME=golang_starter
+  #     - APPENV=dev
+  #     - APPMODE=debug
+  #   volumes:
+  #     - ./:/app/golang_starter
+  #   container_name: golang_starter_debug
+
+networks:
+  default:
+    external:
+      name: my-shared-network
