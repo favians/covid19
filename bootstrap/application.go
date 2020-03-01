@@ -40,7 +40,6 @@ func init() {
 	App = &Application{}
 	App.loadAppConfig()
 	App.loadDBConfig()
-
 	App.loadENV()
 
 	App.Path = "./"

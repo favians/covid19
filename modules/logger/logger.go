@@ -72,6 +72,7 @@ func (l *Log) LogRequest(c echo.Context, req interface{}, resp interface{}) {
 		"host":      c.Request().Host,
 		"uri":       c.Request().RequestURI,
 		"headers":   c.Request().Header,
+		"method":    c.Request().Method,
 		"request":   req,
 		"response":  resp,
 	}).Info("request log")
