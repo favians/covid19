@@ -1,27 +1,37 @@
 package logger
 
 import (
+	"fmt"
 	"log"
+	"strings"
 	"time"
+
+	"github.com/labstack/echo"
 
 	rotatelogs "github.com/lestrrat-go/file-rotatelogs"
 	"github.com/sirupsen/logrus"
 )
 
-type (
-	Log struct {
-		Logger *logrus.Logger
-	}
-)
+type Log struct {
+	Logger *logrus.Logger
+}
 
-func NewLogger() (*Log, error) {
+func NewLogger(logpath string, logname string, loglevel string) (*Log, error) {
 	l := logrus.New()
 
+	if strings.Trim(logname, " ") == "" {
+		logname = "app"
+	}
+
+	if strings.Trim(logpath, " ") == "" {
+		logpath = "/var/log"
+	}
+
 	logf, err := rotatelogs.New(
-		"storage/logs/access_log.%Y%m%d",
+		fmt.Sprintf("%s/%s.%%Y%%m%%d", logpath, logname),
 
 		// symlink current log to this file
-		rotatelogs.WithLinkName("/tmp/app_access.log"),
+		rotatelogs.WithLinkName(fmt.Sprintf("%s/%s.log", logpath, logname)),
 
 		// max : 7 days to keep
 		rotatelogs.WithMaxAge(24*7*time.Hour),
@@ -36,9 +46,33 @@ func NewLogger() (*Log, error) {
 
 	l.Formatter = &logrus.JSONFormatter{}
 	l.Out = logf
-	l.Level = logrus.DebugLevel
+
+	switch loglevel {
+	case "info":
+		l.Level = logrus.InfoLevel
+	case "panic":
+		l.Level = logrus.PanicLevel
+	case "fatal":
+		l.Level = logrus.FatalLevel
+	case "error":
+		l.Level = logrus.ErrorLevel
+	default:
+		l.Level = logrus.DebugLevel
+	}
 
 	return &Log{
 		Logger: l,
 	}, nil
+}
+
+func (l *Log) LogRequest(c echo.Context, req interface{}, resp interface{}) {
+	l.Logger.WithFields(logrus.Fields{
+		"remote_ip": c.RealIP(),
+		"protocol":  c.Request().Proto,
+		"host":      c.Request().Host,
+		"uri":       c.Request().RequestURI,
+		"headers":   c.Request().Header,
+		"request":   req,
+		"response":  resp,
+	}).Info("request log")
 }

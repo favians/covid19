@@ -1,43 +1,13 @@
-app_name: GolangStarter
+app_name: Golang_Starter
 app_version: 0.0.1
-app_env: dev
+app_env: test
 
-dev:
+test:
   adapter: postgre
   database: golang_starter
   username: root
   password: masukaja
   host: 0.0.0.0
-  port: 5432
-  idle_conns: 10
-  open_conns: 100
-  sslmode: disable
-  timezone: Asia/Jakarta
-  admin_username: vian_admin
-  admin_password: 12345
-  jwt_secret: JwtSecretBroh
-
-staging:
-  adapter: postgre
-  database: golang_starter
-  username: root
-  password: masukaja
-  host: 0.0.0.0
-  port: 5432
-  idle_conns: 10
-  open_conns: 100
-  sslmode: disable
-  timezone: Asia/Jakarta
-  admin_username: vian_admin
-  admin_password: 12345
-  jwt_secret: JwtSecretBroh
-
-production:
-  adapter: postgre
-  database: golang_starter
-  username: root
-  password: masukaja
-  host: postgres_server #defaults to 127.0.0.1
   port: 5432
   idle_conns: 10
   open_conns: 100

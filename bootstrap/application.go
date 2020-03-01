@@ -3,6 +3,11 @@ package bootstrap
 import (
 	"fmt"
 
+	"log"
+	"strings"
+	"time"
+
+	logger "github.com/favians/golang_starter/modules/logger"
 	"github.com/fsnotify/fsnotify"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/jinzhu/gorm"
@@ -10,11 +15,6 @@ import (
 	_ "github.com/jinzhu/gorm/dialects/postgres"
 	_ "github.com/lib/pq"
 	"github.com/spf13/viper"
-
-	"go/build"
-	"log"
-	"strings"
-	"time"
 )
 
 var (
@@ -26,29 +26,40 @@ var (
 type Config viper.Viper
 
 type Application struct {
-	Name      string   `json:"name"`
-	Version   string   `json:"version"`
-	ENV       string   `json:"env"`
-	AppConfig Config   `json:"application_config"`
-	DBConfig  Config   `json:"database_config"`
-	DB        *gorm.DB `json:"db"`
-	Path      string   `json:"path"`
+	Name      string      `json:"name"`
+	Version   string      `json:"version"`
+	ENV       string      `json:"env"`
+	AppConfig Config      `json:"application_config"`
+	DBConfig  Config      `json:"database_config"`
+	DB        *gorm.DB    `json:"db"`
+	Path      string      `json:"path"`
+	Log       *logger.Log `json:"log"`
 }
 
 func init() {
 	App = &Application{}
-
-	App.Path = fmt.Sprintf("%s/src/StarterGolang", build.Default.GOPATH)
-
-	App.loadENV()
 	App.loadAppConfig()
 	App.loadDBConfig()
+
+	App.loadENV()
+
+	App.Path = "./"
+	if App.ENV == "test" {
+		App.Path = "./.."
+	}
 
 	App.Name = App.AppConfig.String("app_name")
 	App.Version = App.AppConfig.String("app_version")
 
 	App.DB = App.DBInit()
 	App.DB.LogMode(false) // set query log = OFF
+
+	App.Log, err = logger.NewLogger(fmt.Sprintf("%s/storage/logs", App.Path), App.Name, "info")
+	if err != nil {
+		log.Println(err)
+	}
+
+	log.Printf("app path : %s", App.Path)
 }
 
 // loadAppConfig: read application config and build viper object
@@ -99,11 +110,16 @@ func (app *Application) loadDBConfig() {
 
 // loadENV
 func (app *Application) loadENV() {
+
 	var APPENV string
 	var appConfig viper.Viper
 	appConfig = viper.Viper(app.AppConfig)
-	APPENV = appConfig.GetString("env")
+	APPENV = appConfig.GetString("app_env")
+
 	switch APPENV {
+	case "test":
+		app.ENV = "test"
+		break
 	case "dev":
 		app.ENV = "dev"
 		break

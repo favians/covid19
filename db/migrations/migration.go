@@ -10,7 +10,7 @@ import (
 
 // Attention on table relation, seed table that not mutual first.
 func Seed() {
-	if bootstrap.App.ENV == "dev" || bootstrap.App.ENV == "staging" {
+	if bootstrap.App.ENV == "dev" || bootstrap.App.ENV == "test" {
 
 		seeder := bootstrap.App.DB.Begin()
 
@@ -44,7 +44,7 @@ func Seed() {
 }
 
 func Truncate() {
-	if bootstrap.App.ENV == "dev" || bootstrap.App.ENV == "staging" {
+	if bootstrap.App.ENV == "dev" || bootstrap.App.ENV == "test" {
 		log.Printf("------------- TRUNCATE TABLE ---------------")
 		bootstrap.App.DB.Exec("TRUNCATE TABLE users RESTART IDENTITY CASCADE;")
 	}

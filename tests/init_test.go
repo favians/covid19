@@ -9,8 +9,8 @@ import (
 )
 
 func init() {
-	if bootstrap.App.ENV != "dev" && bootstrap.App.ENV != "staging" {
-		fmt.Println("Test only allowed on \"dev\" or \"staging\" environment.")
+	if bootstrap.App.ENV != "dev" && bootstrap.App.ENV != "test" {
+		fmt.Println("Test only allowed on \"dev\" or \"test\" environment.")
 		os.Exit(1)
 	}
 }
