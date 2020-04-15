@@ -16,8 +16,8 @@ type (
 		Nama         string    `json:"nama"`
 		Lower        int       `json:"lower"`
 		Upper        int       `json:"upper"`
-		Start        time.Time `json:"start"`
-		Stop         time.Time `json:"stop"`
+		Start        string    `json:"start"`
+		Stop         string    `json:"stop"`
 		NextSchedule time.Time `json:"next_schedule"`
 	}
 
@@ -60,25 +60,38 @@ func GetRumahSakit() {
 	qry.Scan(&qres)
 
 	for _, value := range qres {
-		GetPasien(value.ID)
+		// GetPasien(value.ID)
 		updateSchedule(qry, value)
 	}
 }
 
-func GetPasien(rsID int) {
-	pasien := []PasienResult{}
+// func GetPasien(rsID int) {
+// 	pasien := []PasienResult{}
 
-	bootstrap.App.DB.Table("pasiens").Where("pasiens.rumah_sakit_id = ?", rsID).Select("no_hp, kode").Scan(&pasien)
-	for _, value := range pasien {
-		log.Println(value.NoHP)
-		log.Println(value.Kode)
-	}
-}
+// 	bootstrap.App.DB.Table("pasiens").Where("pasiens.rumah_sakit_id = ?", rsID).Select("no_hp, kode").Scan(&pasien)
+// 	for _, value := range pasien {
+// 		// log.Println(value.NoHP)
+// 		// log.Println(value.Kode)
+// 	}
+// }
 
 func updateSchedule(qry *gorm.DB, qres RSresult) {
-	// random := rand.Intn(qres.Upper-qres.Lower) + qres.Lower
-
-	// qry.Update()
+	times := time.Now()
+	if isInTimeRange(qres.Start, qres.Stop) {
+		random := rand.Intn(qres.Upper-qres.Lower) + qres.Lower
+		nextSchedule := qres.NextSchedule.Add(time.Hour * time.Duration(random))
+		log.Println("Next Schedule", nextSchedule)
+		qry.Where("id = ?", qres.ID).Update("next_schedule", nextSchedule)
+	} else {
+		t, err := time.Parse("03:04PM", qres.Stop)
+		if err != nil {
+			bootstrap.App.Log.Logger.Println("cron:initCron:updateSchedule() error in parsing Time")
+		}
+		selisih := Abs(t.Hour() - times.Hour())
+		nextSchedule := times.Add(time.Hour * time.Duration(selisih))
+		log.Println(nextSchedule)
+		qry.Where("id = ?", qres.ID).Update("next_schedule", nextSchedule)
+	}
 }
 
 func isInTimeRange(started string, stopped string) bool {
@@ -107,4 +120,11 @@ func stringToTime(str string) time.Time {
 	}
 	bootstrap.App.Log.Logger.Println("Time decoded:", tm)
 	return tm
+}
+
+func Abs(x int) int {
+	if x < 0 {
+		return -x
+	}
+	return x
 }
