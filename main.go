@@ -6,10 +6,13 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"time"
 
+	"github.com/bamzi/jobrunner"
 	"github.com/pressly/goose"
 
 	bootstrap "github.com/favians/golang_starter/bootstrap"
+	cronJob "github.com/favians/golang_starter/cron"
 	"github.com/favians/golang_starter/db/migrations"
 	router "github.com/favians/golang_starter/router"
 )
@@ -21,7 +24,6 @@ var (
 func main() {
 
 	defer bootstrap.App.DB.Close()
-
 	//Print Usage For This Program
 	flags.Usage = usage
 	flags.Parse(os.Args[1:])
@@ -37,6 +39,9 @@ func main() {
 
 	//Run Program As Server
 	if args[0] == "run" {
+		jobrunner.Start()
+		jobrunner.Every(1*time.Second, cronJob.CronJob{})
+
 		fmt.Println("Golang Program Starter")
 
 		log.Printf(" This Program Run In {ENV : %s}", bootstrap.App.ENV)

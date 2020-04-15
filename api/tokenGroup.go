@@ -28,11 +28,21 @@ func TokenGroup(e *echo.Echo) {
 	g.DELETE("", handlers.DeleteUser)
 
 	//API Group For Either Admin or User
-	g = e.Group("general/users")
+	g = e.Group("/pasien")
 	middlewares.SetJwtGeneralMiddlewares(g)
-	g.GET("", handlers.GetUserById)
-	g.GET("/list", handlers.GetUsers)
-	g.POST("", handlers.AddUser)
-	g.PUT("", handlers.EditUser)
-	g.DELETE("", handlers.DeleteUser)
+	g.GET("", handlers.GetPasienById)
+	g.GET("/list", handlers.GetPasien)
+	g.POST("", handlers.AddPasien)
+	g.PUT("", handlers.EditPasien)
+	g.DELETE("", handlers.DeletePasien)
+
+	//API Group For Either Admin or User
+	g = e.Group("/rumahsakit")
+	middlewares.SetJwtGeneralMiddlewares(g)
+	g.GET("", handlers.GetRumahSakitById)
+	g.GET("/list", handlers.GetRumahSakit)
+	g.POST("", handlers.AddRumahSakit)
+	g.PUT("", handlers.EditRumahSakit)
+	g.DELETE("", handlers.DeleteRumahSakit)
+
 }

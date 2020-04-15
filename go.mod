@@ -3,6 +3,7 @@ module github.com/favians/golang_starter
 go 1.13
 
 require (
+	github.com/bamzi/jobrunner v1.0.0
 	github.com/denisenkom/go-mssqldb v0.0.0-20190915052044-aa4949efa320 // indirect
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/fastly/go-utils v0.0.0-20180712184237-d95a45783239 // indirect
@@ -12,6 +13,7 @@ require (
 	github.com/go-sql-driver/mysql v1.4.1
 	github.com/gorilla/websocket v1.4.1 // indirect
 	github.com/imkira/go-interpol v1.1.0 // indirect
+	github.com/jarcoal/httpmock v1.0.5
 	github.com/jehiah/go-strftime v0.0.0-20171201141054-1d33003b3869 // indirect
 	github.com/jinzhu/gorm v1.9.10
 	github.com/k0kubun/colorstring v0.0.0-20150214042306-9440f1994b88 // indirect
@@ -29,6 +31,7 @@ require (
 	github.com/onsi/gomega v1.5.0 // indirect
 	github.com/pelletier/go-toml v1.4.0 // indirect
 	github.com/pressly/goose v2.6.0+incompatible
+	github.com/robfig/cron v1.2.0
 	github.com/sirupsen/logrus v1.4.2
 	github.com/smartystreets/goconvey v1.6.4 // indirect
 	github.com/spf13/afero v1.2.2 // indirect

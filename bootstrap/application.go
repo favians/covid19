@@ -8,6 +8,7 @@ import (
 	"time"
 
 	logger "github.com/favians/golang_starter/modules/logger"
+	hedwig "github.com/favians/golang_starter/modules/notification"
 	"github.com/fsnotify/fsnotify"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/jinzhu/gorm"
@@ -26,14 +27,15 @@ var (
 type Config viper.Viper
 
 type Application struct {
-	Name      string      `json:"name"`
-	Version   string      `json:"version"`
-	ENV       string      `json:"env"`
-	AppConfig Config      `json:"application_config"`
-	DBConfig  Config      `json:"database_config"`
-	DB        *gorm.DB    `json:"db"`
-	Path      string      `json:"path"`
-	Log       *logger.Log `json:"log"`
+	Name      string        `json:"name"`
+	Version   string        `json:"version"`
+	ENV       string        `json:"env"`
+	AppConfig Config        `json:"application_config"`
+	DBConfig  Config        `json:"database_config"`
+	DB        *gorm.DB      `json:"db"`
+	Path      string        `json:"path"`
+	Log       *logger.Log   `json:"log"`
+	Hedwig    hedwig.Hedwig `json:"hedwig"`
 }
 
 func init() {
@@ -57,6 +59,16 @@ func init() {
 	if err != nil {
 		log.Println(err)
 	}
+
+	// notificationParams := App.AppConfig.GetStringMapString("notification")
+	// App.Hedwig, err = notification.Init(notificationParams["client_id"], notificationParams["client_secret"], notificationParams["email_from"], notificationParams["host"], notificationParams["version"], App.AppConfig.GetSub("notification").GetBool("test_mode"))
+	// if err != nil {
+	// 	log.Println("email notification error : %s", err)
+	// 	App.Log.Logger.WithFields(logrus.Fields{
+	// 		"hedwig response": App.Hedwig,
+	// 		"error":           err,
+	// 	}).Error("email notification error")
+	// }
 
 	log.Printf("app path : %s", App.Path)
 }
@@ -153,6 +165,24 @@ func (config *Config) Boolean(key string) bool {
 	var viperConfig viper.Viper
 	viperConfig = viper.Viper(*config)
 	return viperConfig.GetBool(fmt.Sprintf("%s.%s", App.ENV, key))
+}
+
+func (config *Config) GetStringMapString(key string) map[string]string {
+	var viperConfig viper.Viper
+	viperConfig = viper.Viper(*config)
+	return viperConfig.GetStringMapString(fmt.Sprintf("%s.%s", App.ENV, key))
+}
+
+func (config *Config) GetSub(key string) *viper.Viper {
+	var viperConfig viper.Viper
+	viperConfig = viper.Viper(*config)
+	return viperConfig.Sub(fmt.Sprintf("%s.%s", App.ENV, key))
+}
+
+func (config *Config) GetTime(key string) time.Time {
+	var viperConfig viper.Viper
+	viperConfig = viper.Viper(*config)
+	return viperConfig.GetTime(fmt.Sprintf("%s.%s", App.ENV, key))
 }
 
 func (app *Application) DBInit() *gorm.DB {
