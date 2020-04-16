@@ -25,11 +25,6 @@ type (
 	}
 )
 
-var (
-	_page = 1
-	_rp   = 25
-)
-
 // Callback before update Admin
 func (m *Admin) BeforeUpdate() (err error) {
 	m.UpdatedAt = time.Now()

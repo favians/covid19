@@ -34,7 +34,7 @@ func GetPasien(c echo.Context) error {
 	jk := c.QueryParam("jk")
 	kode := c.QueryParam("kode")
 	status := c.QueryParam("status")
-	rs_id, _ := strconv.Atoi(c.QueryParam("rumah_sakit_id"))
+	// rs_id, _ := strconv.Atoi(c.QueryParam("rumah_sakit_id"))
 	orderby := c.QueryParam("orderby")
 	sort := c.QueryParam("sort")
 
@@ -50,7 +50,7 @@ func GetPasien(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusUnprocessableEntity, vld)
 	}
 
-	result, err := model.GetList(page, rp, orderby, sort, &models.PasienFilterable{nama, jk, kode, status, rs_id})
+	result, err := model.GetList(page, rp, orderby, sort, &models.PasienFilterable{nama, jk, kode, status})
 	if err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}

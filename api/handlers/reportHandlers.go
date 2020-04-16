@@ -31,7 +31,7 @@ func GetReport(c echo.Context) error {
 	rp, err := strconv.Atoi(c.QueryParam("rp"))
 	page, err := strconv.Atoi(c.QueryParam("p"))
 	kode := c.QueryParam("kode")
-	rs_id, _ := strconv.Atoi(c.QueryParam("rumah_sakit_id"))
+	// rs_id, _ := strconv.Atoi(c.QueryParam("rumah_sakit_id"))
 	kondisi := c.QueryParam("kondisi")
 	suhu := c.QueryParam("suhu")
 	demam := c.QueryParam("demam")
@@ -50,7 +50,7 @@ func GetReport(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusUnprocessableEntity, vld)
 	}
 
-	result, err := model.GetList(page, rp, orderby, sort, &models.ReportFilterable{kode, rs_id, kondisi, suhu, demam})
+	result, err := model.GetList(page, rp, orderby, sort, &models.ReportFilterable{kode, kondisi, suhu, demam})
 	if err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}

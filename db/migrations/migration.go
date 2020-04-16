@@ -33,6 +33,7 @@ func Seed() {
 				log.Printf("created")
 			}
 		}
+		log.Printf("------------- SEED Rumah Sakit ---------------")
 
 		var RumahSakits []models.RumahSakit = []models.RumahSakit{
 			models.RumahSakit{Nama: "Rs. Persahabatan", Start: "01:00AM", Stop: "11:00PM", Lower: "1", Upper: "5"},
@@ -48,6 +49,7 @@ func Seed() {
 				log.Printf("created")
 			}
 		}
+		log.Printf("------------- SEED Pasien ---------------")
 
 		var pasiens []models.Pasien = []models.Pasien{
 			models.Pasien{Nama: "favian", NoHp: "08123456781", TTL: "01/02/1978", JK: "laki-laki", Kode: "1111111111", Status: "OTG", RumahSakitID: 1, AdminID: 1},
@@ -64,6 +66,7 @@ func Seed() {
 				log.Printf("created")
 			}
 		}
+		log.Printf("------------- SEED Report ---------------")
 
 		var reports []models.Report = []models.Report{
 			models.Report{Kode: "1111111111", RumahSakitID: 1, Longitude: "-7.9693016677787885", Latitude: "112.6356524673932", Kondisi: "sehat", Suhu: "36.5", Demam: "tidak"},

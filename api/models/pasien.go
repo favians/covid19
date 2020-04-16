@@ -24,11 +24,10 @@ type (
 
 	// just use string type, since it will be use on query at DB layer
 	PasienFilterable struct {
-		Nama         string `json:"nama"`
-		JK           string `json:"jk"`
-		Kode         string `json:"kode"`
-		Status       string `json:"status"`
-		RumahSakitID int    `json:"rumah_sakit_id"`
+		Nama   string `json:"nama"`
+		JK     string `json:"jk"`
+		Kode   string `json:"kode"`
+		Status string `json:"status"`
 	}
 )
 

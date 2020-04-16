@@ -51,7 +51,7 @@ func TokenGroup(e *echo.Echo) {
 	g.GET("", handlers.GetReportById)
 	g.GET("/list", handlers.GetReport)
 	g.POST("", handlers.AddReport)
-	g.PUT("", handlers.EditRumahSakit)
-	g.DELETE("", handlers.DeleteRumahSakit)
+	g.PUT("", handlers.EditReport)
+	g.DELETE("", handlers.DeleteReport)
 
 }

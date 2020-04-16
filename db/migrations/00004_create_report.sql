@@ -12,7 +12,7 @@ CREATE TABLE "reports" (
     "kondisi" character varying(100),
     "suhu" character varying(100),
     "demam" character varying(100),
-    "rumah_sakit_id" bigserial,
+    "rumah_sakit_id" bigint,
     PRIMARY KEY ("id"),
     FOREIGN KEY ("rumah_sakit_id") REFERENCES rumah_sakits(id)
 

@@ -34,6 +34,8 @@ type (
 )
 
 var (
+	_page     = 1
+	_rp       = 25
 	total_rec int
 )
 

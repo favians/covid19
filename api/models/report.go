@@ -8,12 +8,12 @@ type (
 	Report struct {
 		BaseModel
 		Kode         string `json:"kode"`
-		RumahSakitID int    `json:"rumah_sakit_id"`
 		Longitude    string `json:"longitude"`
 		Latitude     string `json:"latitude"`
 		Kondisi      string `json:"kondisi"`
 		Suhu         string `json:"suhu"`
 		Demam        string `json:"demam"`
+		RumahSakitID int    `json:"rumah_sakit_id"`
 	}
 
 	ReportPaginationResponse struct {
@@ -23,11 +23,10 @@ type (
 
 	// just use string type, since it will be use on query at DB layer
 	ReportFilterable struct {
-		Kode         string `json:"kode"`
-		RumahSakitID int    `json:"rumah_sakit_id"`
-		Kondisi      string `json:"kondisi"`
-		Suhu         string `json:"suhu"`
-		Demam        string `json:"demam"`
+		Kode    string `json:"kode"`
+		Kondisi string `json:"kondisi"`
+		Suhu    string `json:"suhu"`
+		Demam   string `json:"demam"`
 	}
 )
 

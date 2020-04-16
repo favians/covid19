@@ -12,8 +12,8 @@ CREATE TABLE "pasiens" (
     "jk" character varying(100),
     "kode" character varying(100),
     "status" character varying(100),
-    "rumah_sakit_id" bigserial,
-    "admin_id" bigserial,
+    "rumah_sakit_id" bigint,
+    "admin_id" bigint,
     PRIMARY KEY ("id"),
     FOREIGN KEY ("rumah_sakit_id") REFERENCES rumah_sakits(id),
     FOREIGN KEY ("admin_id") REFERENCES admins(id)
