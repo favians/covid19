@@ -6,13 +6,10 @@ import (
 	"fmt"
 	"log"
 	"os"
-	"time"
 
-	"github.com/bamzi/jobrunner"
 	"github.com/pressly/goose"
 
 	bootstrap "github.com/favians/golang_starter/bootstrap"
-	cronJob "github.com/favians/golang_starter/cron"
 	"github.com/favians/golang_starter/db/migrations"
 	router "github.com/favians/golang_starter/router"
 )
@@ -39,8 +36,8 @@ func main() {
 
 	//Run Program As Server
 	if args[0] == "run" {
-		jobrunner.Start()
-		jobrunner.Every(1*time.Second, cronJob.CronJob{})
+		// jobrunner.Start()
+		// jobrunner.Every(1*time.Second, cronJob.CronJob{})
 
 		fmt.Println("Golang Program Starter")
 
