@@ -50,8 +50,8 @@ func TokenGroup(e *echo.Echo) {
 	middlewares.SetJwtGeneralMiddlewares(g)
 	g.GET("", handlers.GetReportById)
 	g.GET("/list", handlers.GetReport)
-	g.POST("", handlers.AddReport)
 	g.PUT("", handlers.EditReport)
 	g.DELETE("", handlers.DeleteReport)
+	e.POST("/report", handlers.AddReport)
 
 }
