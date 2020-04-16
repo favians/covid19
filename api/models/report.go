@@ -7,12 +7,13 @@ import (
 type (
 	Report struct {
 		BaseModel
-		Nama   string `json:"nama"`
-		NoHp   string `json:"no_hp"`
-		TTL    string `json:"ttl"`
-		JK     string `json:"jk"`
-		Kode   string `json:"kode"`
-		Status string `json:"status"`
+		Kode         string `json:"kode"`
+		RumahSakitID int    `json:"rumah_sakit_id"`
+		Longitude    string `json:"longitude"`
+		Latitude     string `json:"latitude"`
+		Kondisi      string `json:"kondisi"`
+		Suhu         string `json:"suhu"`
+		Demam        string `json:"demam"`
 	}
 
 	ReportPaginationResponse struct {
@@ -22,10 +23,11 @@ type (
 
 	// just use string type, since it will be use on query at DB layer
 	ReportFilterable struct {
-		Nama   string `json:"nama"`
-		JK     string `json:"jk"`
-		Kode   string `json:"kode"`
-		Status string `json:"status"`
+		Kode         string `json:"kode"`
+		RumahSakitID int    `json:"rumah_sakit_id"`
+		Kondisi      string `json:"kondisi"`
+		Suhu         string `json:"suhu"`
+		Demam        string `json:"demam"`
 	}
 )
 

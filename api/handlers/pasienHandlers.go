@@ -117,9 +117,9 @@ func EditPasien(c echo.Context) error {
 	defer c.Request().Body.Close()
 
 	rules := govalidator.MapData{
-		"nama":           []string{"required"},
-		"no_hp":          []string{"required"},
-		"rumah_sakit_id": []string{"required"},
+		"nama":           []string{},
+		"no_hp":          []string{},
+		"rumah_sakit_id": []string{},
 	}
 
 	_, err = model.FindByID(id)

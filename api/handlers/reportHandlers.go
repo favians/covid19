@@ -4,6 +4,7 @@ import (
 	"net/http"
 	"os"
 	"strconv"
+	"time"
 
 	"github.com/favians/golang_starter/api/models"
 
@@ -24,12 +25,16 @@ func init() {
 	log.SetLevel(log.DebugLevel)
 }
 
-func GetRumahSakit(c echo.Context) error {
-	model := models.RumahSakit{}
+func GetReport(c echo.Context) error {
+	model := models.Report{}
 
 	rp, err := strconv.Atoi(c.QueryParam("rp"))
 	page, err := strconv.Atoi(c.QueryParam("p"))
-	nama := c.QueryParam("nama")
+	kode := c.QueryParam("kode")
+	rs_id, _ := strconv.Atoi(c.QueryParam("rumah_sakit_id"))
+	kondisi := c.QueryParam("kondisi")
+	suhu := c.QueryParam("suhu")
+	demam := c.QueryParam("demam")
 	orderby := c.QueryParam("orderby")
 	sort := c.QueryParam("sort")
 
@@ -45,7 +50,7 @@ func GetRumahSakit(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusUnprocessableEntity, vld)
 	}
 
-	result, err := model.GetList(page, rp, orderby, sort, &models.RumahSakitFilterable{nama})
+	result, err := model.GetList(page, rp, orderby, sort, &models.ReportFilterable{kode, rs_id, kondisi, suhu, demam})
 	if err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
@@ -53,8 +58,8 @@ func GetRumahSakit(c echo.Context) error {
 	return c.JSON(http.StatusOK, result)
 }
 
-func GetRumahSakitById(c echo.Context) error {
-	model := models.RumahSakit{}
+func GetReportById(c echo.Context) error {
+	model := models.Report{}
 
 	id, err := strconv.Atoi(c.QueryParam("id"))
 
@@ -77,17 +82,19 @@ func GetRumahSakitById(c echo.Context) error {
 	return c.JSON(http.StatusOK, result)
 }
 
-func AddRumahSakit(c echo.Context) error {
-	model := models.RumahSakit{}
+func AddReport(c echo.Context) error {
+	model := models.Report{}
 
 	defer c.Request().Body.Close()
 
 	rules := govalidator.MapData{
-		"nama":  []string{"required"},
-		"lower": []string{"required"},
-		"upper": []string{"required"},
-		"start": []string{"required"},
-		"stop":  []string{"required"},
+		"kode":           []string{"required"},
+		"rumah_sakit_id": []string{"required"},
+		"longitude":      []string{"required"},
+		"latitude":       []string{"required"},
+		"kondisi":        []string{"required"},
+		"suhu":           []string{"required"},
+		"demam":          []string{"required"},
 	}
 
 	vld := ValidateRequest(c, rules, &model)
@@ -95,28 +102,32 @@ func AddRumahSakit(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusUnprocessableEntity, vld)
 	}
 
+	model.Kode = strconv.FormatInt(time.Now().Unix(), 10)
+
 	result, err := model.Create()
 	if err != nil {
 		log.Printf("FAILED TO CREATE : %s\n", err)
-		return echo.NewHTTPError(http.StatusBadRequest, "Failed to create new Rumah Sakit")
+		return echo.NewHTTPError(http.StatusBadRequest, "Failed to create new Report")
 	}
 
 	return c.JSON(http.StatusCreated, result)
 }
 
-func EditRumahSakit(c echo.Context) error {
-	model := models.RumahSakit{}
+func EditReport(c echo.Context) error {
+	model := models.Report{}
 
 	id, err := strconv.Atoi(c.QueryParam("id"))
 
 	defer c.Request().Body.Close()
 
 	rules := govalidator.MapData{
-		"nama":  []string{},
-		"lower": []string{},
-		"upper": []string{},
-		"start": []string{},
-		"stop":  []string{},
+		"kode":           []string{},
+		"rumah_sakit_id": []string{},
+		"longitude":      []string{},
+		"latitude":       []string{},
+		"kondisi":        []string{},
+		"suhu":           []string{},
+		"demam":          []string{},
 	}
 
 	_, err = model.FindByID(id)
@@ -134,14 +145,14 @@ func EditRumahSakit(c echo.Context) error {
 	err = model.Update()
 	if err != nil {
 		log.Printf("FAILED TO UPDATE: %s\n", err)
-		return echo.NewHTTPError(http.StatusBadRequest, "Failed to update Rumah Sakit")
+		return echo.NewHTTPError(http.StatusBadRequest, "Failed to update Report")
 	}
 
 	return c.JSON(http.StatusOK, model)
 }
 
-func DeleteRumahSakit(c echo.Context) error {
-	model := models.RumahSakit{}
+func DeleteReport(c echo.Context) error {
+	model := models.Report{}
 
 	id, err := strconv.Atoi(c.QueryParam("id"))
 
@@ -166,7 +177,7 @@ func DeleteRumahSakit(c echo.Context) error {
 	err = model.Delete()
 	if err != nil {
 		log.Printf("FAILED TO DELETE: %s\n", err)
-		return echo.NewHTTPError(http.StatusBadRequest, "Failed to delete Rumah Sakit")
+		return echo.NewHTTPError(http.StatusBadRequest, "Failed to delete Report")
 	}
 
 	return c.JSON(http.StatusOK, model)
