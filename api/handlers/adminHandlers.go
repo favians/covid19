@@ -24,13 +24,13 @@ func init() {
 	log.SetLevel(log.DebugLevel)
 }
 
-func GetUsers(c echo.Context) error {
-	model := models.User{}
+func GetAdmins(c echo.Context) error {
+	model := models.Admin{}
 
 	rp, err := strconv.Atoi(c.QueryParam("rp"))
 	page, err := strconv.Atoi(c.QueryParam("p"))
 	name := c.QueryParam("name")
-	username := c.QueryParam("username")
+	instansi := c.QueryParam("instansi")
 	orderby := c.QueryParam("orderby")
 	sort := c.QueryParam("sort")
 
@@ -46,7 +46,7 @@ func GetUsers(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusUnprocessableEntity, vld)
 	}
 
-	result, err := model.GetList(page, rp, orderby, sort, &models.UserFilterable{name, username})
+	result, err := model.GetList(page, rp, orderby, sort, &models.AdminFilterable{name, instansi})
 	if err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
@@ -54,8 +54,8 @@ func GetUsers(c echo.Context) error {
 	return c.JSON(http.StatusOK, result)
 }
 
-func GetUserById(c echo.Context) error {
-	model := models.User{}
+func GetAdminById(c echo.Context) error {
+	model := models.Admin{}
 
 	id, err := strconv.Atoi(c.QueryParam("id"))
 
@@ -78,8 +78,8 @@ func GetUserById(c echo.Context) error {
 	return c.JSON(http.StatusOK, result)
 }
 
-func AddUser(c echo.Context) error {
-	model := models.User{}
+func AddAdmin(c echo.Context) error {
+	model := models.Admin{}
 
 	defer c.Request().Body.Close()
 
@@ -87,6 +87,7 @@ func AddUser(c echo.Context) error {
 		"name":     []string{"required"},
 		"username": []string{"required"},
 		"password": []string{"required"},
+		"instansi": []string{"required"},
 	}
 
 	vld := ValidateRequest(c, rules, &model)
@@ -97,23 +98,24 @@ func AddUser(c echo.Context) error {
 	result, err := model.Create()
 	if err != nil {
 		log.Printf("FAILED TO CREATE : %s\n", err)
-		return echo.NewHTTPError(http.StatusBadRequest, "Failed to create new user")
+		return echo.NewHTTPError(http.StatusBadRequest, "Failed to create new Admin")
 	}
 
 	return c.JSON(http.StatusCreated, result)
 }
 
-func EditUser(c echo.Context) error {
-	model := models.User{}
+func EditAdmin(c echo.Context) error {
+	model := models.Admin{}
 
 	id, err := strconv.Atoi(c.QueryParam("id"))
 
 	defer c.Request().Body.Close()
 
 	rules := govalidator.MapData{
-		"name":     []string{"required"},
-		"username": []string{"required"},
-		"password": []string{"required"},
+		"name":     []string{},
+		"username": []string{},
+		"password": []string{},
+		"instansi": []string{"required"},
 	}
 
 	_, err = model.FindByID(id)
@@ -131,14 +133,14 @@ func EditUser(c echo.Context) error {
 	err = model.Update()
 	if err != nil {
 		log.Printf("FAILED TO UPDATE: %s\n", err)
-		return echo.NewHTTPError(http.StatusBadRequest, "Failed to update user")
+		return echo.NewHTTPError(http.StatusBadRequest, "Failed to update Admin")
 	}
 
 	return c.JSON(http.StatusOK, model)
 }
 
-func DeleteUser(c echo.Context) error {
-	model := models.User{}
+func DeleteAdmin(c echo.Context) error {
+	model := models.Admin{}
 
 	id, err := strconv.Atoi(c.QueryParam("id"))
 
@@ -163,7 +165,7 @@ func DeleteUser(c echo.Context) error {
 	err = model.Delete()
 	if err != nil {
 		log.Printf("FAILED TO DELETE: %s\n", err)
-		return echo.NewHTTPError(http.StatusBadRequest, "Failed to delete user")
+		return echo.NewHTTPError(http.StatusBadRequest, "Failed to delete Admin")
 	}
 
 	return c.JSON(http.StatusOK, model)

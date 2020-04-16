@@ -13,9 +13,10 @@ CREATE TABLE "pasiens" (
     "kode" character varying(100),
     "status" character varying(100),
     "rumah_sakit_id" bigserial,
+    "admin_id" bigserial,
     PRIMARY KEY ("id"),
-    FOREIGN KEY ("rumah_sakit_id") REFERENCES rumah_sakits(id)
-
+    FOREIGN KEY ("rumah_sakit_id") REFERENCES rumah_sakits(id),
+    FOREIGN KEY ("admin_id") REFERENCES admins(id)
 ) WITH (oids = false);
 
 -- +goose Down

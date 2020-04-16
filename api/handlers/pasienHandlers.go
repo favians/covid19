@@ -98,6 +98,9 @@ func AddPasien(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusUnprocessableEntity, vld)
 	}
 
+	admin := c.Get("admin").(models.Admin)
+	log.Println(admin)
+
 	model.Kode = strconv.FormatInt(time.Now().Unix(), 10)
 
 	result, err := model.Create()

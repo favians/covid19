@@ -14,6 +14,7 @@ type (
 		Kode         string `json:"kode"`
 		Status       string `json:"status"`
 		RumahSakitID int    `json:"rumah_sakit_id"`
+		AdminID      int    `json:"admin_id"`
 	}
 
 	PasienPaginationResponse struct {

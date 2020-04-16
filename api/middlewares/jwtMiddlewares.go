@@ -2,10 +2,11 @@ package middlewares
 
 import (
 	"fmt"
-	"github.com/favians/golang_starter/api/models"
-	"github.com/favians/golang_starter/bootstrap"
 	"net/http"
 	"strconv"
+
+	"github.com/favians/golang_starter/api/models"
+	"github.com/favians/golang_starter/bootstrap"
 
 	jwt "github.com/dgrijalva/jwt-go"
 	"github.com/labstack/echo"
@@ -77,19 +78,19 @@ func validateJwtAdmin(next echo.HandlerFunc) echo.HandlerFunc {
 
 func validateJwtUser(next echo.HandlerFunc) echo.HandlerFunc {
 	return func(c echo.Context) error {
-		user := c.Get("user")
-		token := user.(*jwt.Token)
+		admin := c.Get("user")
+		token := admin.(*jwt.Token)
 
 		if claims, ok := token.Claims.(jwt.MapClaims); ok {
-			user := models.User{}
+			admin := models.Admin{}
 			mid, _ := strconv.Atoi(fmt.Sprintf("%s", claims["jti"]))
-			_, err := user.FindByID(mid)
+			_, err := admin.FindByID(mid)
 
 			if err != nil {
 				return echo.NewHTTPError(http.StatusForbidden, "Forbidden")
 			}
 
-			c.Set("user", user)
+			c.Set("admin", admin)
 
 			return next(c)
 		}
@@ -108,15 +109,15 @@ func ValidateGeneralJwt(next echo.HandlerFunc) echo.HandlerFunc {
 			if claims["is_admin"] == true {
 				return next(c)
 			} else {
-				user := models.User{}
+				admin := models.Admin{}
 				mid, _ := strconv.Atoi(fmt.Sprintf("%s", claims["jti"]))
-				_, err := user.FindByID(mid)
+				_, err := admin.FindByID(mid)
 
 				if err != nil {
 					return echo.NewHTTPError(http.StatusForbidden, "Forbidden")
 				}
 
-				c.Set("merchant", user)
+				c.Set("admin", admin)
 			}
 			return next(c)
 		}

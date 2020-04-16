@@ -5,22 +5,23 @@ import (
 )
 
 type (
-	User struct {
+	Admin struct {
 		BaseModel
 		Name     string `json:"name"`
 		Username string `json:"username"`
 		Password string `json:"password" valid:"password"`
+		Instansi string `json:"instansi"`
 	}
 
-	UserPaginationResponse struct {
+	AdminPaginationResponse struct {
 		Meta PaginationResponse `json:"meta"`
-		Data []User             `json:"data"`
+		Data []Admin            `json:"data"`
 	}
 
 	// just use string type, since it will be use on query at DB layer
-	UserFilterable struct {
+	AdminFilterable struct {
 		Name     string `json:"name"`
-		Username string `json:"username"`
+		Instansi string `json:"instansi"`
 	}
 )
 
@@ -29,41 +30,41 @@ var (
 	_rp   = 25
 )
 
-// Callback before update user
-func (m *User) BeforeUpdate() (err error) {
+// Callback before update Admin
+func (m *Admin) BeforeUpdate() (err error) {
 	m.UpdatedAt = time.Now()
 	return
 }
 
-// Callback before create user
-func (m *User) BeforeCreate() (err error) {
+// Callback before create Admin
+func (m *Admin) BeforeCreate() (err error) {
 	m.CreatedAt = time.Now()
 	return
 }
 
 // Create
-func (m *User) Create() (*User, error) {
+func (m *Admin) Create() (*Admin, error) {
 	var err error
 	err = Create(&m)
 	return m, err
 }
 
 // Update
-func (m *User) Update() error {
+func (m *Admin) Update() error {
 	var err error
 	err = Save(&m)
 	return err
 }
 
 // Delete
-func (m *User) Delete() error {
+func (m *Admin) Delete() error {
 	var err error
 	err = Delete(&m)
 	return err
 }
 
 // FindByID
-func (m *User) FindByID(id int) (*User, error) {
+func (m *Admin) FindByID(id int) (*Admin, error) {
 	var (
 		err error
 	)
@@ -72,12 +73,12 @@ func (m *User) FindByID(id int) (*User, error) {
 }
 
 // GetList
-func (m *User) GetList(page int, rp int, orderby string, sort string, filters interface{}) (interface{}, error) {
+func (m *Admin) GetList(page int, rp int, orderby string, sort string, filters interface{}) (interface{}, error) {
 	var (
-		users []User
-		err   error
+		admins []Admin
+		err    error
 	)
 
-	resp, err := FindAllWithPage(&users, page, rp, orderby, sort, filters)
+	resp, err := FindAllWithPage(&admins, page, rp, orderby, sort, filters)
 	return resp, err
 }

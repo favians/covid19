@@ -18,15 +18,15 @@ func Seed() {
 
 		log.Printf("------------- SEED User ---------------")
 
-		var users []models.User = []models.User{
-			models.User{Name: "vian", Username: "vian", Password: "1234"},
-			models.User{Name: "arafat", Username: "arafat", Password: "1234"},
-			models.User{Name: "hasan", Username: "hasan", Password: "1234"},
-			models.User{Name: "fikri", Username: "fikri", Password: "1234"},
+		var admins []models.Admin = []models.Admin{
+			models.Admin{Name: "vian", Username: "vian", Password: "1234", Instansi: "Rs. Mardi Waluyo"},
+			models.Admin{Name: "arafat", Username: "arafat", Password: "1234", Instansi: "Rs. Syaiful Anwar"},
+			models.Admin{Name: "hasan", Username: "hasan", Password: "1234", Instansi: "Rs. Persahabatan"},
+			models.Admin{Name: "fikri", Username: "fikri", Password: "1234", Instansi: "Rs. Perjalanan Tetangga"},
 		}
 
-		for _, user := range users {
-			if err := seeder.Create(&user).Error; err != nil {
+		for _, admin := range admins {
+			if err := seeder.Create(&admin).Error; err != nil {
 				debugLog, _ := json.Marshal(err)
 				log.Printf(string(debugLog))
 			} else {
@@ -50,10 +50,10 @@ func Seed() {
 		}
 
 		var pasiens []models.Pasien = []models.Pasien{
-			models.Pasien{Nama: "favian", NoHp: "08123456781", TTL: "01/02/1978", JK: "laki-laki", Kode: "1111111111", Status: "OTG", RumahSakitID: 1},
-			models.Pasien{Nama: "arafat", NoHp: "08123456782", TTL: "02/03/1979", JK: "laki-laki", Kode: "2222222222", Status: "OTG", RumahSakitID: 1},
-			models.Pasien{Nama: "hasan", NoHp: "08123456783", TTL: "03/04/1980", JK: "laki-laki", Kode: "3333333333", Status: "OTG", RumahSakitID: 2},
-			models.Pasien{Nama: "fikri", NoHp: "08123456784", TTL: "04/05/1981", JK: "laki-laki", Kode: "4444444444", Status: "OTG", RumahSakitID: 2},
+			models.Pasien{Nama: "favian", NoHp: "08123456781", TTL: "01/02/1978", JK: "laki-laki", Kode: "1111111111", Status: "OTG", RumahSakitID: 1, AdminID: 1},
+			models.Pasien{Nama: "arafat", NoHp: "08123456782", TTL: "02/03/1979", JK: "laki-laki", Kode: "2222222222", Status: "OTG", RumahSakitID: 1, AdminID: 1},
+			models.Pasien{Nama: "hasan", NoHp: "08123456783", TTL: "03/04/1980", JK: "laki-laki", Kode: "3333333333", Status: "OTG", RumahSakitID: 2, AdminID: 1},
+			models.Pasien{Nama: "fikri", NoHp: "08123456784", TTL: "04/05/1981", JK: "laki-laki", Kode: "4444444444", Status: "OTG", RumahSakitID: 2, AdminID: 1},
 		}
 
 		for _, pasien := range pasiens {

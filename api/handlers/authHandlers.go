@@ -3,10 +3,11 @@ package handlers
 import (
 	"log"
 	"net/http"
-	"github.com/favians/golang_starter/api/models"
-	"github.com/favians/golang_starter/bootstrap"
 	"strconv"
 	"time"
+
+	"github.com/favians/golang_starter/api/models"
+	"github.com/favians/golang_starter/bootstrap"
 
 	jwt "github.com/dgrijalva/jwt-go"
 	"github.com/labstack/echo"
@@ -26,7 +27,7 @@ type JwtClaims struct {
 
 func LoginUser(c echo.Context) error {
 	var (
-		user models.User
+		admin models.Admin
 	)
 
 	username := c.QueryParam("username")
@@ -42,12 +43,12 @@ func LoginUser(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusUnprocessableEntity, vld)
 	}
 
-	if bootstrap.App.DB.Where("username = ?", username).Where("password = ?", password).Find(&user).RecordNotFound() {
+	if bootstrap.App.DB.Where("username = ?", username).Where("password = ?", password).Find(&admin).RecordNotFound() {
 		return echo.NewHTTPError(http.StatusUnauthorized, "invalid username or password")
 	} else {
 
 		// create jwt token
-		token, err := createJwtToken(strconv.FormatUint(user.ID, 10), "user")
+		token, err := createJwtToken(strconv.FormatUint(admin.ID, 10), "user")
 		if err != nil {
 			log.Println("Error Creating User JWT token", err)
 			return c.String(http.StatusInternalServerError, "something went wrong")
@@ -62,7 +63,7 @@ func LoginUser(c echo.Context) error {
 	return c.String(http.StatusUnauthorized, "Your username or password were wrong")
 }
 
-func LoginAdmin(c echo.Context) error {
+func LoginSuperAdmin(c echo.Context) error {
 	username := c.QueryParam("username")
 	password := c.QueryParam("password")
 
