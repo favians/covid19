@@ -36,22 +36,12 @@ func (e CronJob) Run() {
 }
 
 func DoCron() {
-	GetRumahSakit()
 	up := bootstrap.App.AppConfig.GetSub("sms_interval").GetInt("upper")
 	low := bootstrap.App.AppConfig.GetSub("sms_interval").GetInt("lower")
-	start := bootstrap.App.AppConfig.GetSub("sms_interval").GetString("start")
-	stop := bootstrap.App.AppConfig.GetSub("sms_interval").GetString("stop")
 	random := rand.Intn(up-low) + low
 
 	bootstrap.App.Log.Logger.Println("Cron Job Started in" + string(random))
-
-	//Register Your Logic Function Here
-	SendTime := isInTimeRange(start, stop)
-
-	if SendTime {
-		bootstrap.App.Log.Logger.Println("Trying to sending SMS")
-		SendSMS()
-	}
+	GetRumahSakit()
 }
 
 func GetRumahSakit() {
@@ -60,27 +50,26 @@ func GetRumahSakit() {
 	qry.Scan(&qres)
 
 	for _, value := range qres {
-		// GetPasien(value.ID)
+		GetPasien(value.ID)
 		updateSchedule(qry, value)
 	}
 }
 
-// func GetPasien(rsID int) {
-// 	pasien := []PasienResult{}
+func GetPasien(rsID int) {
+	pasien := []PasienResult{}
 
-// 	bootstrap.App.DB.Table("pasiens").Where("pasiens.rumah_sakit_id = ?", rsID).Select("no_hp, kode").Scan(&pasien)
-// 	for _, value := range pasien {
-// 		// log.Println(value.NoHP)
-// 		// log.Println(value.Kode)
-// 	}
-// }
+	bootstrap.App.DB.Table("pasiens").Where("pasiens.rumah_sakit_id = ?", rsID).Select("no_hp, kode").Scan(&pasien)
+	for _, value := range pasien {
+		SendSMS(value)
+	}
+}
 
 func updateSchedule(qry *gorm.DB, qres RSresult) {
 	times := time.Now()
-	if isInTimeRange(qres.Start, qres.Stop) {
-		random := rand.Intn(qres.Upper-qres.Lower) + qres.Lower
-		nextSchedule := qres.NextSchedule.Add(time.Hour * time.Duration(random))
-		log.Println("Next Schedule", nextSchedule)
+	random := rand.Intn(qres.Upper-qres.Lower) + qres.Lower
+	nextSchedule := qres.NextSchedule.Add(time.Hour * time.Duration(random))
+
+	if isInTimeRange(qres.Start, qres.Stop, nextSchedule) {
 		qry.Where("id = ?", qres.ID).Update("next_schedule", nextSchedule)
 	} else {
 		t, err := time.Parse("03:04PM", qres.Stop)
@@ -94,19 +83,19 @@ func updateSchedule(qry *gorm.DB, qres RSresult) {
 	}
 }
 
-func isInTimeRange(started string, stopped string) bool {
+func isInTimeRange(started string, stopped string, nextSchedule time.Time) bool {
 
-	t := time.Now()
-	timeNowString := t.Format(time.Kitchen)
-	timeNow := stringToTime(timeNowString)
+	t := nextSchedule
+	NextSchedulerString := t.Format(time.Kitchen)
+	nextScheduler := stringToTime(NextSchedulerString)
 	start := stringToTime(started)
 	end := stringToTime(stopped)
 
-	if timeNow.Before(start) {
+	if nextScheduler.Before(start) {
 		return false
 	}
 
-	if timeNow.Before(end) {
+	if nextScheduler.Before(end) {
 		return true
 	}
 
