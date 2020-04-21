@@ -48,6 +48,6 @@ func ValidateQueryStr(c echo.Context, rules govalidator.MapData) map[string]inte
 	return err
 }
 
-func Yallo(c echo.Context) error {
-	return c.String(http.StatusOK, "yallo from the web side!")
+func OptionsHandler(c echo.Context) error {
+	return c.String(http.StatusOK, "Hello From Options")
 }
