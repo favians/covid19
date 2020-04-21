@@ -1,10 +1,13 @@
 package router
 
 import (
+	"net/http"
+
 	"github.com/favians/golang_starter/api"
 	"github.com/favians/golang_starter/api/middlewares"
 
 	"github.com/labstack/echo"
+	eMiddleware "github.com/labstack/echo/middleware"
 )
 
 func New() *echo.Echo {
@@ -16,8 +19,12 @@ func New() *echo.Echo {
 	// set all middlewares
 	middlewares.SetMainMiddlewares(e)
 	middlewares.SetCompleteLogMiddlware(e)
-
 	middlewares.SetJwtAdminMiddlewares(jwtGroup)
+
+	e.Use(eMiddleware.CORSWithConfig(eMiddleware.CORSConfig{
+		AllowOrigins: []string{"*"},
+		AllowMethods: []string{http.MethodGet, http.MethodPut, http.MethodPost, http.MethodDelete},
+	}))
 
 	// set main routes
 	api.MainGroup(e)
