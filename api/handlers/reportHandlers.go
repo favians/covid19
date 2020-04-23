@@ -89,7 +89,7 @@ func AddReport(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusUnprocessableEntity, vld)
 	}
 
-	model.Kode = strconv.FormatInt(time.Now().Unix(), 10)
+	// model.Kode = strconv.FormatInt(time.Now().Unix(), 10)
 
 	result, err := model.Create()
 	if err != nil {
