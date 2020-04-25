@@ -14,6 +14,9 @@ CREATE TABLE "pasiens" (
     "status" character varying(100),
     "rumah_sakit_id" bigint,
     "admin_id" bigint,
+    "email" character varying(500),
+    "longitude" character varying(500),
+    "latitude" character varying(500),
     PRIMARY KEY ("id"),
     FOREIGN KEY ("rumah_sakit_id") REFERENCES rumah_sakits(id),
     FOREIGN KEY ("admin_id") REFERENCES admins(id)

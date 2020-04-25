@@ -52,10 +52,11 @@ func Seed() {
 		log.Printf("------------- SEED Pasien ---------------")
 
 		var pasiens []models.Pasien = []models.Pasien{
-			models.Pasien{Nama: "favian", NoHp: "08123456781", TTL: "01/02/1978", JK: "laki-laki", Kode: "1111111111", Status: "OTG", RumahSakitID: 1, AdminID: 1},
-			models.Pasien{Nama: "arafat", NoHp: "08123456782", TTL: "02/03/1979", JK: "laki-laki", Kode: "2222222222", Status: "OTG", RumahSakitID: 1, AdminID: 1},
-			models.Pasien{Nama: "hasan", NoHp: "08123456783", TTL: "03/04/1980", JK: "laki-laki", Kode: "3333333333", Status: "OTG", RumahSakitID: 2, AdminID: 1},
-			models.Pasien{Nama: "fikri", NoHp: "08123456784", TTL: "04/05/1981", JK: "laki-laki", Kode: "4444444444", Status: "OTG", RumahSakitID: 2, AdminID: 1},
+			models.Pasien{Nama: "favian", NoHp: "08123456781", TTL: "01/02/1978", JK: "laki-laki", Kode: "1111111111", Status: "OTG", RumahSakitID: 1, AdminID: 1, Email: "faviansyah@alterra.id", Longitude: "-7.9725673", Latitude: "112.6315456"},
+			models.Pasien{Nama: "arafat", NoHp: "08123456782", TTL: "02/03/1979", JK: "laki-laki", Kode: "2222222222", Status: "OTG", RumahSakitID: 1, AdminID: 1, Email: "arafat@alterra.id", Longitude: "-7.9725673", Latitude: "112.6315456"},
+			models.Pasien{Nama: "hasan", NoHp: "08123456783", TTL: "03/04/1980", JK: "laki-laki", Kode: "3333333333", Status: "OTG", RumahSakitID: 2, AdminID: 1, Email: "hasan@alterra.id", Longitude: "-7.9725673", Latitude: "112.6315456"},
+			models.Pasien{Nama: "fikri", NoHp: "08123456784", TTL: "04/05/1981", JK: "laki-laki", Kode: "4444444444", Status: "OTG", RumahSakitID: 2, AdminID: 1, Email: "famri@alterra.id", Longitude: "-7.9725673", Latitude: "112.6315456"},
+			models.Pasien{Nama: "davidboy", NoHp: "08123456784", TTL: "04/05/1981", JK: "laki-laki", Kode: "5555555555", Status: "OTG", RumahSakitID: 2, AdminID: 1, Email: "famri@alterra.id", Longitude: "-7.9725673", Latitude: "112.6315456"},
 		}
 
 		for _, pasien := range pasiens {

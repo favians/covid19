@@ -8,6 +8,7 @@ import (
 	"time"
 
 	logger "github.com/favians/golang_starter/modules/logger"
+	"github.com/favians/golang_starter/modules/notification"
 	hedwig "github.com/favians/golang_starter/modules/notification"
 	"github.com/fsnotify/fsnotify"
 	_ "github.com/go-sql-driver/mysql"
@@ -15,6 +16,7 @@ import (
 	_ "github.com/jinzhu/gorm/dialects/mysql"
 	_ "github.com/jinzhu/gorm/dialects/postgres"
 	_ "github.com/lib/pq"
+	"github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
 )
 
@@ -60,15 +62,15 @@ func init() {
 		log.Println(err)
 	}
 
-	// notificationParams := App.AppConfig.GetStringMapString("notification")
-	// App.Hedwig, err = notification.Init(notificationParams["client_id"], notificationParams["client_secret"], notificationParams["email_from"], notificationParams["host"], notificationParams["version"], App.AppConfig.GetSub("notification").GetBool("test_mode"))
-	// if err != nil {
-	// 	log.Println("email notification error : %s", err)
-	// 	App.Log.Logger.WithFields(logrus.Fields{
-	// 		"hedwig response": App.Hedwig,
-	// 		"error":           err,
-	// 	}).Error("email notification error")
-	// }
+	notificationParams := App.AppConfig.GetStringMapString("notification")
+	App.Hedwig, err = notification.Init(notificationParams["client_id"], notificationParams["client_secret"], notificationParams["email_from"], notificationParams["host"], notificationParams["version"], App.AppConfig.GetSub("notification").GetBool("test_mode"))
+	if err != nil {
+		log.Println("email notification error : %s", err)
+		App.Log.Logger.WithFields(logrus.Fields{
+			"hedwig response": App.Hedwig,
+			"error":           err,
+		}).Error("email notification error")
+	}
 
 	log.Printf("app path : %s", App.Path)
 }

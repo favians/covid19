@@ -2,6 +2,8 @@ package models
 
 import (
 	"time"
+
+	"github.com/favians/golang_starter/bootstrap"
 )
 
 type (
@@ -15,6 +17,9 @@ type (
 		Status       string `json:"status"`
 		RumahSakitID int    `json:"rumah_sakit_id"`
 		AdminID      int    `json:"admin_id"`
+		Email        string `json:"email"`
+		Longitude    string `json:"longitude"`
+		Latitude     string `json:"latitude"`
 	}
 
 	PasienPaginationResponse struct {
@@ -82,4 +87,14 @@ func (m *Pasien) GetList(page int, rp int, orderby string, sort string, filters 
 
 	resp, err := FindAllWithPage(&pasiens, page, rp, orderby, sort, filters)
 	return resp, err
+}
+
+// FindByID
+func (m *Pasien) FindByCode(code string) (*Pasien, error) {
+	var (
+		err error
+	)
+
+	bootstrap.App.DB.Table("pasiens").Where("kode = ?", code).First(&m)
+	return m, err
 }

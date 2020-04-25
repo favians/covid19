@@ -25,7 +25,7 @@ type (
 
 	EmailPayload struct {
 		To          string  `json:"to"`
-		From        string  `json:"from"`
+		From        string  `json:"from,omitempty"`
 		Cc          *string `json:"cc"`
 		Bcc         *string `json:"bcc"`
 		Subject     string  `json:"subject"`
