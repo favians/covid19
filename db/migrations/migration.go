@@ -16,23 +16,6 @@ func Seed() {
 
 		log.Printf("------------- SEED BEGIN ---------------")
 
-		log.Printf("------------- SEED User ---------------")
-
-		var admins []models.Admin = []models.Admin{
-			models.Admin{Name: "vian", Username: "vian", Password: "1234", Instansi: "Rs. Mardi Waluyo"},
-			models.Admin{Name: "arafat", Username: "arafat", Password: "1234", Instansi: "Rs. Syaiful Anwar"},
-			models.Admin{Name: "hasan", Username: "hasan", Password: "1234", Instansi: "Rs. Persahabatan"},
-			models.Admin{Name: "fikri", Username: "fikri", Password: "1234", Instansi: "Rs. Perjalanan Tetangga"},
-		}
-
-		for _, admin := range admins {
-			if err := seeder.Create(&admin).Error; err != nil {
-				debugLog, _ := json.Marshal(err)
-				log.Printf(string(debugLog))
-			} else {
-				log.Printf("created")
-			}
-		}
 		log.Printf("------------- SEED Rumah Sakit ---------------")
 
 		var RumahSakits []models.RumahSakit = []models.RumahSakit{
@@ -46,9 +29,28 @@ func Seed() {
 				debugLog, _ := json.Marshal(err)
 				log.Printf(string(debugLog))
 			} else {
+				log.Printf("rs created")
+			}
+		}
+
+		log.Printf("------------- SEED Admin ---------------")
+
+		var admins []models.Admin = []models.Admin{
+			models.Admin{Name: "vian", Username: "vian", Password: "1234", RumahSakitID: 1},
+			models.Admin{Name: "arafat", Username: "arafat", Password: "1234", RumahSakitID: 1},
+			models.Admin{Name: "hasan", Username: "hasan", Password: "1234", RumahSakitID: 2},
+			models.Admin{Name: "fikri", Username: "fikri", Password: "1234", RumahSakitID: 2},
+		}
+
+		for _, admin := range admins {
+			if err := seeder.Create(&admin).Error; err != nil {
+				debugLog, _ := json.Marshal(err)
+				log.Printf(string(debugLog))
+			} else {
 				log.Printf("created")
 			}
 		}
+
 		log.Printf("------------- SEED Pasien ---------------")
 
 		var pasiens []models.Pasien = []models.Pasien{

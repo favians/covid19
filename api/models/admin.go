@@ -7,10 +7,10 @@ import (
 type (
 	Admin struct {
 		BaseModel
-		Name     string `json:"name"`
-		Username string `json:"username"`
-		Password string `json:"password" valid:"password"`
-		Instansi string `json:"instansi"`
+		Name         string `json:"name"`
+		Username     string `json:"username"`
+		Password     string `json:"password" valid:"password"`
+		RumahSakitID int    `json:"rumah_sakit_id"`
 	}
 
 	AdminPaginationResponse struct {
@@ -20,8 +20,8 @@ type (
 
 	// just use string type, since it will be use on query at DB layer
 	AdminFilterable struct {
-		Name     string `json:"name"`
-		Instansi string `json:"instansi"`
+		Name         string `json:"name"`
+		RumahSakitID string `json:"rumah_sakit_id"`
 	}
 )
 

@@ -16,7 +16,7 @@ type (
 		Kode         string `json:"kode"`
 		Status       string `json:"status"`
 		RumahSakitID int    `json:"rumah_sakit_id"`
-		AdminID      int    `json:"admin_id"`
+		AdminID      uint64 `json:"admin_id"`
 		Email        string `json:"email"`
 		Longitude    string `json:"longitude"`
 		Latitude     string `json:"latitude"`

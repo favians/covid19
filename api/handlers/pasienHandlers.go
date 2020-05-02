@@ -3,6 +3,7 @@ package handlers
 import (
 	"net/http"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/favians/golang_starter/api/models"
@@ -75,9 +76,14 @@ func AddPasien(c echo.Context) error {
 	defer c.Request().Body.Close()
 
 	rules := govalidator.MapData{
-		"nama":           []string{"required"},
-		"no_hp":          []string{"required"},
-		"rumah_sakit_id": []string{"required"},
+		"nama":      []string{"required"},
+		"no_hp":     []string{"required"},
+		"ttl":       []string{},
+		"jk":        []string{},
+		"status":    []string{},
+		"email":     []string{},
+		"longitude": []string{},
+		"latitude":  []string{},
 	}
 
 	vld := ValidateRequest(c, rules, &model)
@@ -89,6 +95,9 @@ func AddPasien(c echo.Context) error {
 	log.Println(admin)
 
 	model.Kode = strconv.FormatInt(time.Now().Unix(), 10)
+	model.RumahSakitID = admin.RumahSakitID
+	model.AdminID = admin.ID
+	model.Status = strings.ToUpper(model.Status)
 
 	result, err := model.Create()
 	if err != nil {
@@ -110,6 +119,12 @@ func EditPasien(c echo.Context) error {
 		"nama":           []string{},
 		"no_hp":          []string{},
 		"rumah_sakit_id": []string{},
+		"ttl":            []string{},
+		"jk":             []string{},
+		"status":         []string{},
+		"email":          []string{},
+		"longitude":      []string{},
+		"latitude":       []string{},
 	}
 
 	_, err = model.FindByID(id)

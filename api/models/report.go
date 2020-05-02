@@ -13,7 +13,7 @@ type (
 		Kondisi      string `json:"kondisi"`
 		Suhu         string `json:"suhu"`
 		Demam        string `json:"demam"`
-		RumahSakitID int    `json:"rumah_sakit_id"`
+		RumahSakitID uint64 `json:"rumah_sakit_id"`
 	}
 
 	ReportPaginationResponse struct {

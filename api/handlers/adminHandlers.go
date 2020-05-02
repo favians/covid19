@@ -17,7 +17,7 @@ func GetAdmins(c echo.Context) error {
 	rp, err := strconv.Atoi(c.QueryParam("rp"))
 	page, err := strconv.Atoi(c.QueryParam("p"))
 	name := c.QueryParam("name")
-	instansi := c.QueryParam("instansi")
+	rumah_sakit_id := c.QueryParam("rumah_sakit_id")
 	orderby := c.QueryParam("orderby")
 	sort := c.QueryParam("sort")
 
@@ -33,7 +33,7 @@ func GetAdmins(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusUnprocessableEntity, vld)
 	}
 
-	result, err := model.GetList(page, rp, orderby, sort, &models.AdminFilterable{name, instansi})
+	result, err := model.GetList(page, rp, orderby, sort, &models.AdminFilterable{name, rumah_sakit_id})
 	if err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
@@ -70,10 +70,10 @@ func AddAdmin(c echo.Context) error {
 	defer c.Request().Body.Close()
 
 	rules := govalidator.MapData{
-		"name":     []string{"required"},
-		"username": []string{"required"},
-		"password": []string{"required"},
-		"instansi": []string{"required"},
+		"name":           []string{"required"},
+		"username":       []string{"required"},
+		"password":       []string{"required"},
+		"rumah_sakit_id": []string{"required"},
 	}
 
 	vld := ValidateRequest(c, rules, &model)
@@ -98,10 +98,10 @@ func EditAdmin(c echo.Context) error {
 	defer c.Request().Body.Close()
 
 	rules := govalidator.MapData{
-		"name":     []string{},
-		"username": []string{},
-		"password": []string{},
-		"instansi": []string{"required"},
+		"name":           []string{},
+		"username":       []string{},
+		"password":       []string{},
+		"rumah_sakit_id": []string{},
 	}
 
 	_, err = model.FindByID(id)

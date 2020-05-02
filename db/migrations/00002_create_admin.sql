@@ -9,8 +9,9 @@ CREATE TABLE "admins" (
     "name" character varying(100),
     "username" character varying(100),
     "password" character varying(100),
-    "instansi" character varying(100),
-    PRIMARY KEY ("id")
+    "rumah_sakit_id" bigint,
+    PRIMARY KEY ("id"),
+    FOREIGN KEY ("rumah_sakit_id") REFERENCES rumah_sakits(id)
 
 ) WITH (oids = false);
 
