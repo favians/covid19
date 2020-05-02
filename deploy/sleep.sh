@@ -1,3 +1,3 @@
 #!/usr/bin/env sh
 
-sleep 3600
+debug 3600

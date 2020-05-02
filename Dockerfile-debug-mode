@@ -11,4 +11,4 @@ COPY . .
 
 EXPOSE 8000
 
-ENTRYPOINT ["./deploy/sleep.sh"]
+ENTRYPOINT ["./deploy/debug.sh"]
